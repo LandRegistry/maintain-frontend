@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Where do you want to search?{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+      {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+      </div>
+      <div class="column-full">
+        <h1 class="heading-large">Where do you want to search?</h1>
+
+        <form action="{{ submit_url }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <fieldset class="inline">
+
+            <legend class="visually-hidden">The location in which to search</legend>
+
+            <div class="form-group {% if validation_errors and validation_errors['location'] %} form-group-error {% endif %}">
+
+              <p>Enter an address to start. You can also search by:</p>
+              <ul class="list list-bullet">
+                <li>postcode</li>
+                <li>town</li>
+                <li>road</li>
+                <li>Unique Property Reference Number (UPRN)</li>
+              </ul>
+              <p>You will see a map showing this address on the next page.
+              Use this map to start drawing the search extent.</p>
+
+
+            <label for="location" class="visually-hidden">
+                Location information
+            </label>
+
+            {% if validation_errors and validation_errors['location'] %}
+                <span class="error-message"
+                    id="error-message-reference">{{ validation_errors['location'].inline_message }}</span>
+            {% endif %}
+
+            <input type="text" id="location"
+                name="location"
+                maxlength="1000"
+                value="{% if data %}{{ data }}{% endif %}"
+                class="form-control"/>
+
+              <input id="continue"
+                 type="submit"
+                 value="Search"
+                 class="button">
+              <br/><br/>
+              <p>No address for this search? <a href="{{ url_for('create_llc1.llc1_get_extent_no_location') }}">
+                Start with the map and scroll to the location instead</a></p>
+
+            </div>
+
+          </fieldset>
+
+        </form>
+
+      </div>
+    </div>
+  </main>
+
+{% endblock %}

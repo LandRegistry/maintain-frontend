@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <main id="content" role="main">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+
+                <h1 class="heading-large">Expired charges report</h1>
+
+                <a id="llc1-download-link" class="button" href="{{ report_url }}" target="_blank">Download the report</a>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <br/>
+                <br/>
+                <a id="return-home-link" href="{{ url_for('home.get') }}">Return to main menu</a>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

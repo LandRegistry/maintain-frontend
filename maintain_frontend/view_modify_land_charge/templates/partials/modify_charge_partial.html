@@ -1,0 +1,387 @@
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-id-header">HM Land Registry reference</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-id-data">{{ charge_id }}</p>
+    </div>
+</div>
+
+<div class="grid-row">
+  <div class="column-third">
+    <h2 class="margin-top-small" id="charge-category-header">Category</h2>
+  </div>
+  <div class="column-two-thirds">
+    <p class="bold-small" id="charge-category-data">
+        {{ charge_item.charge_type }}
+    </p>
+  </div>
+</div>
+
+{% if charge_item.charge_sub_category %}
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-sub-category-header">{{ charge_item.charge_type }} category</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-sub-category-data">
+            {{ charge_item.charge_sub_category }}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-statutory-provision-header">Law</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-statutory-provision-data">
+            {% if charge_item.statutory_provision %}
+                {{ charge_item.statutory_provision }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-instrument-header">Legal document</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-instrument-data">
+            {% if charge_item.instrument %}
+                {{ charge_item.instrument }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div id="charge_description" class="grid-row {% if "charge_description" in edited_fields %} highlight_row {% endif %}">
+  <div class="column-third">
+    <h2 class="margin-top-small" id="charge-description-header">Description</h2>
+  </div>
+  <div class="column-third">
+    <p class="bold-small" id="charge-description-data">
+      {% if charge_item.supplementary_information %}
+        {{ charge_item.supplementary_information }}
+      {% else %}
+        Not provided
+      {% endif %}
+    </p>
+  </div>
+  <div class="column-third">
+    <p class="margin-top-small"><a href="{{ url_for('modify_land_charge.get_charge_description') }}" title="Change other information" id="charge-description-update">Update description</a></p>
+  </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="originating-authority-header">Originating authority</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="originating-authority-data">{{ charge_item.originating_authority }}</p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="registration-date-header">Registered on</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="registration-date-data">{{ charge_item.registration_date.strftime('%d %B %Y').lstrip("0") }}</p>
+    </div>
+</div>
+
+{% if updated %}
+    <div class="grid-row">
+        <div class="column-third">
+            <h2 class="margin-top-small" id="update-date-header">Updated on</h2>
+        </div>
+        <div class="column-two-thirds">
+            <p class="bold-small" id="update-date-data">{{ updated_date }}</p>
+        </div>
+    </div>
+{% endif %}
+
+
+<div class="grid-row">
+    <div class="column-full">
+        <hr>
+    </div>
+</div>
+
+{% if charge_item.charge_type == 'Financial' and charge_item.amount_originally_secured %}
+        <div id="amount_originally_secured" class="grid-row {% if "amount_originally_secured" in edited_fields %} highlight_row {% endif %}">
+          <div class="column-third">
+            <h2 class="margin-top-small" id="amount-originally-secured-header">Amount</h2>
+          </div>
+          <div class="column-third">
+            <p class="bold-small" id="amount-originally-secured-data">
+               &pound;{{ charge_item.amount_originally_secured }}
+            </p>
+          </div>
+          <div class="column-third">
+           <p class="margin-top-small">
+               <a href="{{ url_for('modify_land_charge.get_financial_charge') }}" title="Change financial amount" id="amount-originally-secured-update">Update amount</a>
+           </p>
+          </div>
+        </div>
+        
+        <div id="rate_of_interest" class="grid-row {% if "rate_of_interest" in edited_fields %} highlight_row {% endif %}">
+            <div class="column-third">
+              <h2 class="margin-top-small" id="rate-of-interest-header">Interest rate</h2>
+            </div>
+            <div class="column-two-thirds">
+              <p class="bold-small" id="rate-of-interest-data">
+                {% if charge_item.rate_of_interest %}
+                   {{ charge_item.rate_of_interest }}{% if charge_item.rate_of_interest|float('NaN') is number %}&#37;{% endif %}
+                {% else %}
+                  Not provided
+                {% endif %}
+              </p>
+            </div>
+        </div>
+        <div class="grid-row">
+          <div class="column-full">
+            <hr>
+          </div>
+        </div>
+{% endif %}
+
+{% if charge_item.charge_type == 'Land compensation' %}
+    {% if charge_item.land_compensation_paid %}
+        <!-- s52 LCA -->
+        <div id="land_compensation_paid" class="grid-row {% if "land_compensation_paid" in edited_fields %} highlight_row {% endif %}">
+          <div class="column-third">
+            <h2 class="margin-top-small" id="land-compensation-paid-header">Advance payment</h2>
+          </div>
+          <div class="column-third">
+            <p class="bold-small" id="land-compensation-paid-data">
+               &pound;{{ charge_item.land_compensation_paid }}
+            </p>
+          </div>
+          <div class="column-third">
+           <p class="margin-top-small">
+               <a href="{{ url_for('modify_land_charge.get_land_compensation_payment') }}" title="Change land compensation paid amount" id="land-compensation-paid-update">Update advance payment, total compensation, or agreed or estimated</a>
+           </p>
+          </div>
+        </div>
+
+        <div id="amount_of_compensation" class="grid-row {% if "amount_of_compensation" in edited_fields %} highlight_row {% endif %}">
+            <div class="column-third">
+              <h2 class="margin-top-small" id="amount-of-compensation-header">Total compensation</h2>
+            </div>
+            <div class="column-third">
+              <p class="bold-small" id="amount-of-compensation-data">
+                {% if charge_item.amount_of_compensation %}
+                    &pound;{{ charge_item.amount_of_compensation }}
+                {% else %}
+                    Not provided
+                {% endif %}
+              </p>
+            </div>
+          </div>
+
+        <div id="land_compensation_amount_type" class="grid-row {% if "land_compensation_amount_type" in edited_fields %} highlight_row {% endif %}">
+          <div class="column-third">
+            <h2 class="margin-top-small" id="land-compensation-agreed-estimated-header">Agreed or estimated</h2>
+          </div>
+          <div class="column-two-thirds">
+            <p class="bold-small" id="land-compensation-agreed-estimated-data">
+                {% if charge_item.land_compensation_amount_type %}
+                    {{ charge_item.land_compensation_amount_type }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </p>
+          </div>
+        </div>
+
+        <div id="land_compensation_ownership" class="grid-row {% if "land_compensation_ownership" in edited_fields %} highlight_row {% endif %}">
+          <div class="column-third">
+            <h2 class="margin-top-small" id="land-compensation-ownership-header">Interest in land</h2>
+          </div>
+          <div class="column-third">
+            <p class="bold-small" id="land-compensation-ownership-data">
+                {{ charge_item.land_capacity_description }}
+            </p>
+          </div>
+          <div class="column-third">
+           <p class="margin-top-small">
+               <a href="{{ url_for('modify_land_charge.get_land_compensation_ownership') }}" title="Change land compensation ownership" id="land-compensation-ownership-update">Update interest in land</a>
+           </p>
+          </div>
+        </div>
+    {% else %}
+        <!-- s8 LCA -->
+        <div id="land_sold_description" class="grid-row {% if "land_sold_description" in edited_fields %} highlight_row {% endif %}">
+          <div class="column-third">
+            <h2 class="margin-top-small" id="land-sold-description-header">Land sold</h2>
+          </div>
+          <div class="column-third">
+            <p class="bold-small" id="land-sold-description-data">
+              {% for line in charge_item.land_sold_description.splitlines() %}
+                {{ line }}<br/>
+              {% endfor %}
+            </p>
+          </div>
+          <div class="column-third">
+            <p class="margin-top-small">
+              <a href="{{ url_for('modify_land_charge.get_land_compensation_land_sold') }}" title="Change land compensation land sold" id="land-compensation-sold-update">Update land sold</a>
+            </p>
+          </div>
+        </div>
+
+        <div id="land_works_particulars" class="grid-row {% if "land_works_particulars" in edited_fields %} highlight_row {% endif %}">
+          <div class="column-third">
+            <h2 class="margin-top-small" id="land-works-particulars-header">Work done</h2>
+          </div>
+          <div class="column-third">
+            <p class="bold-small" id="land-works-particulars-data">
+              {% for line in charge_item.land_works_particulars.splitlines() %}
+                {{ line }}<br/>
+              {% endfor %}
+            </p>
+          </div>
+          <div class="column-third">
+            <p class="margin-top-small">
+              <a href="{{ url_for('modify_land_charge.get_land_compensation_land_sold') }}" title="Change land compensation work done" id="land-compensation-work-update">Update work done</a>
+            </p>
+          </div>
+        </div>
+    {% endif %}
+    <div class="grid-row">
+    <div class="column-full">
+        <hr>
+    </div>
+</div>
+{% endif %}
+
+
+<div id="location_info" class="grid-row {% if "location_info" in edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-geographic-description-header">Location</h2>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="charge-geographic-description-data">
+            {% if charge_item.charge_geographic_description %}
+                {% for line in charge_item.charge_geographic_description.splitlines() %}
+                    {{ line }}<br/>
+                {% endfor %}
+            {% else %}
+                {{ charge_item.charge_address['line-1'] }}
+                {% if charge_item.charge_address['line-2'] %}<br/>{{ charge_item.charge_address['line-2'] }}{% endif %}
+                {% if charge_item.charge_address['line-3'] %}<br/>{{ charge_item.charge_address['line-3'] }}{% endif %}
+                {% if charge_item.charge_address['line-4'] %}<br/>{{ charge_item.charge_address['line-4'] }}{% endif %}
+                {% if charge_item.charge_address['line-5'] %}<br/>{{ charge_item.charge_address['line-5'] }}{% endif %}
+                {% if charge_item.charge_address['line-6'] %}<br/>{{ charge_item.charge_address['line-6'] }}{% endif %}
+                <br/>{{ charge_item.charge_address['postcode'] }}
+            {% endif %}
+        </p>
+        <p>
+            <a href="{{ url_for('modify_land_charge.get_address_for_charge') }}" title="Change location" id="charge-geographic-description-update">Update location</a>
+            <br/>
+            <a href="{{ url_for('modify_land_charge.get_location') }}" title="Change extent" id="charge-geographic-extent-update">Update extent</a>
+        </p>
+    </div>
+    <div class="column-third">
+        <div id="map-view-charge" aria-label="Image showing charge extent" role="img">
+            {% include "map.html" %}
+        </div>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <hr>
+    </div>
+</div>
+
+<div id="charge_creation_date" class="grid-row {% if "charge_creation_date" in edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-creation-date-header">Creation date</h2>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="charge-creation-date-data">
+            {% if charge_item.charge_creation_date %}
+                {{ charge_item.charge_creation_date.strftime('%-d %B') }} {{ charge_item.charge_creation_date.strftime('%Y').zfill(4) }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_land_charge.get_charge_date') }}" title="Change created on" id="charge-creation-date-update">Update creation date</a></p>
+    </div>
+</div>
+
+<div id="expiry_date" class="grid-row {% if "expiry_date" in edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="expiry-date-header">Expiry date</h2>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="expiry-date-data">
+            {% if charge_item.expiry_date %}
+                {{ charge_item.expiry_date.strftime('%-d %B') }} {{ charge_item.expiry_date.strftime('%Y').zfill(4) }}
+            {% else %}
+                Does not expire
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_land_charge.get_expiry') }}" title="Change expiry" id="expiry-date-update">Update expiry date</a></p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <hr>
+    </div>
+</div>
+
+<div id="further_information" class="grid-row {% if "further_information" in edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="further-information-location-header">Source information</h2>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="further-information-location-data">
+            {% for line in charge_item.further_information_location.splitlines() %}
+                {{ line }}<br/>
+            {% endfor %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_land_charge.get_additional_info') }}" title="Change further info" id="further-information-location-update">Update source information or authority reference</a></p>
+    </div>
+</div>
+
+<div id="further_information_reference" class="grid-row {% if "further_information" in edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="further-information-reference-header">Authority reference</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="further-information-reference-data">
+            {% if charge_item.further_information_reference %}
+                {{ charge_item.further_information_reference }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<br>
+<br>
+{% if edited_fields %}
+<form action="{{ url_for('modify_land_charge.modify_land_charge_confirm') }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input id="submit" type="submit" value="Save changes" class="button">
+</form>
+<br/>
+<p><a href="{{ url_for('modify_land_charge.clear_land_charge_changes', local_land_charge=charge_id) }}" id="cancel-changes">Cancel changes</a></p>
+{% endif %}

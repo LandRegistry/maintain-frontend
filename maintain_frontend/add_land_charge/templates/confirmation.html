@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Charge added{% endblock %}
+
+{% block body %}
+    <main id="content" role="main">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div class="govuk-box-highlight">
+                    <h1 class="bold-large"><span class="charge_type"></span>Charge added</h1>
+                    <p class="bold-small">
+                        HM Land Registry reference<br/>
+                        <strong class="heading-medium" id="display-id">{{ data.charge_id }}</strong>
+                    </p>
+                    <p class="bold-small">
+                        Keep this to help you find the charge again
+                    </p>
+                </div>
+                <p><a href="{{ url_for('add_land_charge.new') }}" id="add-land-charge-new-link">Add another local land charge</a></p>
+                <p><a id="return-home-link" href="{{ url_for('home.get') }}">Return to main menu</a></p>
+            </div>
+        </div>
+    </main>
+{% endblock %}

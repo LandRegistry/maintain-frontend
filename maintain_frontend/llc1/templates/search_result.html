@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Download documents{% endblock %}
+
+{% block body %}
+
+    <main id="content" role="main">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+
+                <h1 class="heading-large">Download documents</h1>
+
+                <h2 class="heading-medium">Search result of local land charges</h2>
+
+                <a id="llc1-download-link" class="button" href="{{ url }}" target="_blank">Download</a>
+
+                {% if supporting_documents %}
+                    <h2 class="heading-medium">Legal documents for light obstruction notices (LONs)</h2>
+                    <div class="column-two-thirds">
+                        <table id="supporting-documents">
+                            <thead>
+                                <tr>
+                                    <th>Charge ID</th>
+
+                                    <th>Link to downloads</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for link in supporting_documents %}
+                                    <tr>
+                                        <td> {{ link }}</td>
+
+                                        <td> <a target="_blank" href="{{ supporting_documents[link] }}">Download</a> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-full">
+                <br/>
+                <br/>
+                <a id="return-home-link" href="{{ url_for('home.get') }}">Return to main menu</a>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

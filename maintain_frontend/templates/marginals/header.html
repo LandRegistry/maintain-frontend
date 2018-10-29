@@ -1,0 +1,26 @@
+<header role="banner" id="global-header" class="with-proposition">
+    <div class="header-wrapper">
+        <div class="header-global">
+            <div class="header-logo">
+                <a href="https://www.gov.uk" title="Go to the GOV.UK homepage" id="logo" class="content">
+                    <img src="{{ config.STATIC_CONTENT_URL }}/images/gov-uk-logotype-crown-invert-trans.png" width="36" height="32" alt="" style="background-color: black"> GOV.UK
+                </a>
+            </div>
+        </div>
+        <div class="header-proposition">
+            <div class="content">
+                <nav id="proposition-menu">
+                    <a id="proposition-name" href="{{ url_for('home.get') }}" style="font-size:24px">Maintain LLC</a>
+                    <ul id="proposition-links">
+                        <li><p id="user-name" style="color:#fff; font-weight:700; display:inline;">
+                            {{ g.session.user.full_name }}
+                        </p></li>
+                        <li><a id="sign-out" href="/logout" style="font-size:16px">Sign out</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="global-header-bar"></div>

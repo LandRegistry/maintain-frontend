@@ -1,0 +1,33 @@
+{% if validation_errors %}
+    <div id="error-summary" class="error-summary">
+        <h2 id="error-summary-heading" class="heading-medium error-summary-heading">
+          {{ validation_summary_heading }}
+        </h2>
+
+        {% for field, error in validation_errors.items() %}
+            {% if error is iterable and error is not mapping  %}
+                {% for sub_error in error %}
+                    {% if sub_error.explanatory_text %}
+                        <p>{{ sub_error.explanatory_text }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% elif error.explanatory_text %}
+                <p>{{ error.explanatory_text }}</p>
+            {% endif %}
+        {% endfor %}
+
+        <ul id="error-summary-list" class="error-summary-list">
+            {% for field, error in validation_errors.items() %}
+	            {% if error is iterable and error is not mapping %}
+	                {% for sub_error in error %}
+		                {% if sub_error.summary_message %}
+		                    <li><a href="#{{ field }}">{{ sub_error.summary_message }}</a></li>
+		                {% endif %}
+		            {% endfor %}
+                {% elif error.summary_message %}
+                    <li><a href="#{{ field }}">{{ error.summary_message }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

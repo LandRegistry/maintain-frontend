@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Download official search result{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h1 class="heading-large">Download official search result</h1>
+                <span class="bold-medium">Search details</span>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="column-third">
+                <p class="font-small">Area description:</p>
+            </div>
+            <div class="column-two-thirds">
+                <p class="bold-medium" id="area_description">{{ area_description }}</p>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-third">
+                <p class="font-small">Reference:</p>
+            </div>
+            <div class="column-two-thirds">
+                <p class="bold-medium" id="reference">{{ reference }}</p>
+            </div>
+        </div>
+        <p><a href="{{ pdf_link }}" class="button" id="download_pdf_link" target="_blank">Download PDF</a></p><br>
+        <span><a href="{{ url_for('home.get') }}" id="return_home_link">Return to main menu</a></span><br>
+        <span>or <a href="{{ url_for('view_official_search.new') }}" id="search_again_link">view another official search</a></span>
+
+    </main>
+{% endblock %}

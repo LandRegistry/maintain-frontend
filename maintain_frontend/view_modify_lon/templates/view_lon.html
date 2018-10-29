@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}View light obstruction notice{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-full">
+            <p>
+                <a id="back-to-search-link-top" href="{{ url_for('search.index') }}">Back to search results</a>
+            </p>
+            <h1 class="heading-large">View light obstruction notice</h1>
+    
+            {% set can_vary = g.application_permissions.vary_lon in g.session.user.permissions %}
+            {% set can_cancel = g.application_permissions.cancel_lon in g.session.user.permissions %}
+            {% if not charge_item.end_date and (can_vary or can_cancel) %}
+            <div class="panel panel-border-wide">
+                {% if can_vary %}
+                <p id="update-charge-link">
+                    <a href="{{ url_for('modify_lon.modify_lon_upload_get', charge_id=charge_id) }}">Update charge</a>
+                </p>
+                {% endif %}
+                {% if can_cancel %}
+                <p id="cancel-charge-link">
+                    <a href="{{ url_for('cancel_lon.cancel_get', charge_id=charge_id) }}">Cancel charge</a>
+                </p>
+                {% endif %}
+            </div>
+            {% endif %} 
+            {% if charge_item.end_date %}
+            <div class="panel panel-border-wide">
+                <p id="charge-was-cancelled" class="bold-small">
+                    This charge was cancelled on {{ charge_item.end_date.strftime('%-d %B %Y') }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+        
+    {% include 'partials/view_lon_partial.html' %}
+    {% include 'partials/return_main_menu.html' %}
+</main>
+<!-- View Page Functionality -->
+<input type="hidden" name="charge_extent" id="charge_extent" value="{{ geometry }}">
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_layer_styles.js') }}"></script>
+    <script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_charge.js') }}"></script>
+{% endblock %}
+

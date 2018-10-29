@@ -1,0 +1,106 @@
+<fieldset id="address-finder" class="hidden">
+    <div class="form-group {% if validation_errors and validation_errors['postcode_search'] %} form-group-error {% endif %}">
+        <label class="form-label-bold" for="postcode_search">
+            Postcode
+        </label>
+
+        {% if validation_errors and validation_errors['postcode_search'] %}
+            <span class="error-message">{{ validation_errors['postcode_search'].inline_message }}</span>
+        {% endif %}
+
+        <div class="validation-wrapper ">
+            <input class="form-control form-control-1-4" id="postcode_search" type="text" name="postcode_search"
+                    {% if request_body %}
+                   value="{{ request_body.postcode }}"
+                    {% endif %}>
+        </div>
+    </div>
+    <div class="form-group">
+        <input id="postcode-search-button"
+               type="button"
+               onclick="address_finder.getAddresses()"
+               value="Find address"
+               class="button">
+    </div>
+</fieldset>
+<div class="form-group hidden" id="addresses-list-container">
+    <label class="form-label-bold" for="addresses-list">Pick an address</label>
+
+    <select class="form-control" id="addresses-list" name="address-select-box">
+        <option id="empty-option">select an option</option>
+    </select>
+</div>
+
+<div id="address-fields">
+    <div class="form-group">
+        <label class="form-label-bold" for="address_line_1">Address line 1</label>
+        <input readonly class="form-control" id="address_line_1" type="text" name="address_line_1"
+               {% if request_body %}
+               value="{{ request_body.address_line_1 }}"
+               {% endif %}>
+    </div>
+    <div class="form-group">
+        <label class="form-label-bold" for="address_line_2">Address line 2</label>
+        <input readonly class="form-control" id="address_line_2" type="text" name="address_line_2"
+               {% if request_body %}
+               value="{{ request_body.address_line_2 }}"
+               {% endif %}>
+    </div>
+    <div class="form-group">
+        <label class="form-label-bold" for="address_line_3">Address line 3</label>
+        <input readonly class="form-control" id="address_line_3" type="text" name="address_line_3"
+               {% if request_body %}
+               value="{{ request_body.address_line_3 }}"
+               {% endif %}>
+    </div>
+    <div class="form-group">
+        <label class="form-label-bold" for="address_line_4">Address line 4</label>
+        <input readonly class="form-control" id="address_line_4" type="text" name="address_line_4"
+               {% if request_body %}
+               value="{{ request_body.address_line_4 }}"
+               {% endif %}>
+    </div>
+    <div class="form-group">
+        <label class="form-label-bold" for="address_line_5">Address line 5</label>
+        <input readonly class="form-control" id="address_line_5" type="text" name="address_line_5"
+               {% if request_body %}
+               value="{{ request_body.address_line_5 }}"
+               {% endif %}>
+    </div>
+    <div class="form-group">
+        <label class="form-label-bold" for="address_line_6">Address line 6</label>
+        <input readonly class="form-control" id="address_line_6" type="text" name="address_line_6"
+               {% if request_body %}
+               value="{{ request_body.address_line_6 }}"
+               {% endif %}>
+    </div>
+
+
+    <div class="form-group {% if validation_errors and validation_errors['postcode'] %} form-group-error {% endif %}" id="postcode-group">
+        <label class="form-label-bold" for="postcode">Postcode</label>
+
+        {% if validation_errors and validation_errors['postcode'] %}
+        <span id="postcode-error-message" class="error-message">{{ validation_errors['postcode'].inline_message }}</span>
+        {% endif %}
+
+        <input readonly class="form-control form-control-1-4" id="postcode" type="text" name="postcode"
+               {% if request_body %}
+               value="{{ request_body.postcode }}"
+               {% endif %}>
+    </div>
+
+    <input id="uprn" type="hidden" name="uprn"
+               {% if request_body and request_body.uprn %}
+               value="{{ request_body.uprn }}"
+               {% endif %}>
+
+    <div class="form-group">
+        <label class="form-label-bold">Country</label>
+        <label class="form-label">United Kingdom</label>
+    </div>
+
+    <div class="form-group">
+        <input id="submit-address" type="submit" value="Continue" class="button">
+    </div>
+
+</div>

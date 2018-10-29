@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Something went wrong!{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+
+                <h1 class="heading-large">Something went wrong!</h1>
+                <p>{{error.message}}</p>
+                <p>
+                    Return to the <a href="{{ error.redirect_url }}">upload documents page</a>
+                </p>
+            </div>
+        </div>
+    </main>
+{% endblock %}

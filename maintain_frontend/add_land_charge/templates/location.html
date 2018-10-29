@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Search by postcode, street name or town{% endblock %}
+{% set isMapPage = True %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+  <div id="content" class="full-screen-map-main">
+    {% include 'partials/phase_banner_beta.html' %}
+  </div>
+
+  <div class="full-screen-map-wrapper">
+    {% include 'partials/add-map-sidebar.html' %}
+    {% include "map.html" %}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ config.STATIC_CONTENT_URL }}/js/knockout-3.4.2.js"></script>
+    {% include 'partials/map_scripts.html' %}
+    <script src="{{ url_for('map.static', filename='js/address_marker.js') }}"></script>
+    <script src="{{ url_for('add_land_charge.static', filename='js/map_styles.js') }}"></script>
+    <script src="{{ url_for('add_land_charge.static', filename='js/save_geometries.js') }}"></script>
+    <script src="{{ url_for('add_land_charge.static', filename='js/add_location.js') }}"></script>
+
+    <script>
+        addLocation.init("{{ config.STATIC_CONTENT_URL | string() }}");
+        $(function(){
+            $("#map").attr('class', 'two-thirds-map');
+            map.updateSize();
+        });
+    </script>
+
+    {% if information %}
+      <script type="text/javascript">
+          $(function(){
+              load_previous_data("{{information}}");
+          });
+      </script>
+    {% else %}
+      <script>
+          var is_lr = {{ 'true' if g.session.user.is_lr() else 'false' }}
+          var organisation = "{{ g.session.user.organisation | string() }}"
+          MAP_HELPERS.zoom_to_boundary(is_lr, organisation)
+      </script>
+    {% endif %}
+
+{% endblock %}

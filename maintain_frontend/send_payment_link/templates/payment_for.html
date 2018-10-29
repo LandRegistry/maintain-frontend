@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}What is the payment link for?{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div id="page-errors">
+                    {% include 'partials/validation_partial.html' %}
+                </div>
+                <h1 class="heading-large">What is the payment link for?</h1>
+                <form action="{{ submit_url }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <fieldset>
+                        <legend class="visually-hidden">What is the payment link for?</legend>
+                        <div id="payment_for" class="form-group {% if validation_errors and validation_errors['payment_for'] %}form-group-error{% endif %}">
+                            {% if validation_errors and validation_errors['payment_for'] %}
+                                <span class="error-message">{{ validation_errors['payment_for'].inline_message }}</span>
+                            {% endif %}
+                            <div class="multiple-choice">
+                                <input id="lon" name="payment_for" type="radio" value="lon">
+                                <label id="lon-label" class="block-label selection-button-radio" for="lon">
+                                    A light obstruction notice (LON)
+                                </label>
+                            </div>
+                            <div class="multiple-choice">
+                                <input id="official_search" name="payment_for" type="radio" value="official_search">
+                                <label id="official_search-label" class="block-label selection-button-radio" for="official_search">
+                                    An official search
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <input id="submit" type="submit" value="Continue" class="button">
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

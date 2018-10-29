@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block title %}What do you want to do?{% endblock %}
+
+{% block body %}
+
+    <main id="content" role="main">
+
+        {% include 'partials/phase_banner_beta.html' %}
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h1 class="heading-large">What do you want to do?</h1>
+
+                <!-- Manage charges section -->
+                {% if g.application_permissions.add_llc in g.session.user.permissions or
+                g.application_permissions.add_lon in g.session.user.permissions or
+                g.application_permissions.browse_llc in g.session.user.permissions or
+                g.application_permissions.vary_llc in g.session.user.permissions or
+                g.application_permissions.cancel_llc in g.session.user.permissions %}
+                    <h2 class="heading-medium">Manage charges</h2>
+                    <ul class="list">
+                        {% if g.application_permissions.add_llc in g.session.user.permissions %}
+                            <li><a id="link-add-charge" href="{{ url_for('add_land_charge.new') }}">Add a charge</a></li>
+                        {% endif %}
+                        <li><a id="link-add-charge-for-other" href="{{ url_for('add_land_charge.new_behalf_of_authority') }}">Add a charge on behalf of another organisation</a></li>
+                        {% if g.application_permissions.browse_llc in g.session.user.permissions or
+                        g.application_permissions.vary_llc in g.session.user.permissions or
+                        g.application_permissions.cancel_llc in g.session.user.permissions %}
+                            <li><a id="link-search-charge" href="{{ url_for('search.index') }}">Find, update or cancel a charge</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+
+                <!-- Official Search section -->
+                {% if g.application_permissions.request_llc1 in g.session.user.permissions %}
+                    <h2 class="heading-medium">Official searches</h2>
+                    <ul class="list">
+                        {% if g.application_permissions.request_llc1 in g.session.user.permissions %}
+                            <li><a id="link-add-llc1" href="{{ url_for('create_llc1.create_llc1') }}">Perform an official search</a></li>
+                        {% endif %}
+                        {% if g.session.user.is_lr() %}
+                            <li><a id="link-view-official-search" href="{{ url_for('view_official_search.new') }}">View an official search</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+
+                <!-- Send payment link section -->
+                <!--{% if g.application_permissions.add_lon in g.session.user.permissions %}-->
+                    <!--<h2 class="heading-medium">Send a payment link</h2>-->
+                    <!--<ul class="list">-->
+                        <!--<li><a id="link-send-payment-link" href="{{ url_for('send_payment_link.send_payment_link') }}">Send a payment link</a></li>-->
+                    <!--</ul>-->
+                <!--{% endif %}-->
+
+                <!-- Two-factor authentication section -->
+                {% if g.application_permissions.account_management in g.session.user.permissions and
+                        config.ENABLE_TWO_FACTOR_AUTHENTICATION and
+                        not g.session.two_factor_authentication_passed %}
+                    <br>
+
+                    <div class="notice">
+                        <i class="icon icon-important">
+                            <span class="visually-hidden">Warning</span>
+                        </i>
+                        <strong class="bold-small">You need a code to manage users
+                            {% if g.application_permissions.manage_source_information in g.session.user.permissions %}
+                                or source information
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <br>
+
+                    <details>
+                        <summary>
+                            <span class="summary">Why do I need a code?</span>
+                        </summary>
+                        <div class="panel panel-border-narrow">
+                            <p>We add an extra layer of security to protect sensitive information</p>
+                        </div>
+                    </details>
+                {% endif %}
+
+                <!-- Manage users section -->
+                {% if g.application_permissions.account_management in g.session.user.permissions %}
+                    <h2 class="heading-medium">Manage users</h2>
+                    <ul class="list">
+                        {% if g.application_permissions.create_lr_admin in g.session.user.permissions or
+                        g.application_permissions.create_la_admin in g.session.user.permissions or
+                        g.application_permissions.create_lr_user in g.session.user.permissions or
+                        g.application_permissions.create_la_user in g.session.user.permissions or
+                        g.application_permissions.create_ooa_admin in g.session.user.permissions or
+                                  g.application_permissions.create_ooa_user in g.session.user.permissions%}
+                            <li><a id="link-add-user" href="/manage-users/add">Add a new user</a></li>
+                        {% endif %}
+                        <li><a id="link-search-user" href="/manage-users">Update an existing user</a></li>
+                    </ul>
+                {% endif %}
+
+                <!-- Manage source information section -->
+                {% if g.application_permissions.manage_source_information in g.session.user.permissions %}
+                    <h2 class="heading-medium">Source information</h2>
+                    <ul class="list">
+                        <li><a id="link-add-source-info" href="{{ url_for('source_info.get_source_information') }}">Manage source information</a></li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+
+    </main>
+
+{% endblock %}

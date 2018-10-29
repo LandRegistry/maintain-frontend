@@ -1,0 +1,26 @@
+<div style="display: none" data-bind="visible: true">
+    <!-- Search Error Heading -->
+    <!-- ko if: errorMessages().length -->
+    <div id="error-summary" class="error-summary">
+        <h2 id="error-summary-heading" class="heading-medium error-summary-heading"> There are errors on this page </h2>
+        <ul id="error-summary-list" class="error-summary-list" data-bind="foreach: errorMessages">
+            <li><a data-bind="attr:{ href: field }, text: message"></a></li>
+        </ul>
+    </div>
+    <!-- /ko -->
+</div>
+
+{% if validation_errors %}
+	{% for field, error in validation_errors.items() %}
+	    {% if error is iterable and error is not mapping  %}
+	        {% for sub_error in error %}
+	            {% if sub_error.summary_message %}
+	                <span data-bind="value: addErrorMessage('#{{field}}', '{{sub_error.summary_message}}',  '{{sub_error.inline_message}}')"></span>
+	            {% endif %}
+	        {% endfor %}
+	    {% elif error.summary_message %}
+	            <span data-bind="value: addErrorMessage('#{{field}}', '{{error.summary_message}}',  '{{error.inline_message}}')"></span>
+	    {% endif %}
+	{% endfor %}
+{% endif %}
+	

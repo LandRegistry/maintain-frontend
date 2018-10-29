@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Search by postcode, street name or town{% endblock %}
+{% set isMapPage = True %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+    <link href="{{ config.STATIC_CONTENT_URL }}/stylesheets/accordion.css" rel=stylesheet media="screen" type=text/css>
+{% endblock %}
+
+{% block body %}
+  <div id="content" class="full-screen-map-main">
+    {% include 'partials/phase_banner_beta.html' %}
+  </div>
+
+  <div class="full-screen-map-wrapper">
+    {% include 'partials/search-sidebar.html' %}
+    {% include "map.html" %}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ config.STATIC_CONTENT_URL }}/js/knockout-3.4.2.js"></script>
+    {% include 'partials/map_scripts.html' %}
+    <!-- Search Functionality -->
+    <script src="{{ url_for('map.static', filename='js/address_marker.js') }}"></script>
+    <script src="{{ url_for('search.static', filename='js/map_styles.js') }}"></script>
+    <script src="{{ url_for('search.static', filename='js/charge_layer.js') }}"></script>
+    <script src="{{ url_for('search.static', filename='js/feature_helpers.js') }}"></script>
+    <script src="{{ url_for('search.static', filename='js/search_view_models.js') }}"></script>
+    <script src="{{ url_for('search.static', filename='js/search.js') }}"></script>
+    <script src="{{ url_for('search.static', filename='js/map_events.js') }}"></script>
+
+
+    <script>
+        search.init({{ permissions | tojson }}, "{{ config.STATIC_CONTENT_URL | string() }}", $SCRIPT_ROOT);
+        $(function(){
+            $("#map").attr('class', 'two-thirds-map');
+            map.updateSize();
+        });
+    </script>
+
+    <script type="text/javascript">
+        var csrf_token = "{{ csrf_token() }}";
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
+
+    <script>
+        var is_lr = {{ 'true' if g.session.user.is_lr() else 'false' }}
+        var organisation = "{{ g.session.user.organisation | safe}}"
+        MAP_HELPERS.zoom_to_boundary(is_lr, organisation)
+    </script>
+
+    {% if search_extent %}
+        <script type="text/javascript">
+            $(function(){
+                search.search_previous_extent("{{search_extent}}");
+            });
+        </script>
+    {% endif %}
+{% endblock %}

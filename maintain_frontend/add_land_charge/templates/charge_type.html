@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}Choose a charge category{% endblock %}
+
+{% block body %}
+  <main id="content">
+    <div class="grid-row">
+      <div class="column-full">
+        {% include 'partials/phase_banner_beta.html' %}
+      </div>
+    </div>
+    <div class="grid-row">
+      <div class="column-two-thirds">
+      {% include 'partials/validation_partial.html' %}
+        <h1 class="heading-large">Choose a charge category</h1>
+        <form action="{{ submit_url }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <fieldset>
+            <legend class="visually-hidden">What is the category of the charge?</legend>
+              {% if validation_errors and validation_errors['charge-type'] %}
+              <div id="charge-type-error" class="form-group-error" style="height: 2em">
+                  <span class="error-message">{{ validation_errors['charge-type'].inline_message }}</span>
+              </div>
+              {% endif %}
+              <div id="charge-type" class="form-group {% if validation_errors and validation_errors['charge-type'] %}form-group-error{% endif %}">
+                {% for category in categories %}
+                  <div class="multiple-choice">
+                    <input id="{{ category['name'].replace(" ", "-").lower() }}" name="charge-type" type="radio" value="{{ category['name'] }}">
+                    <label id="{{ category['name'].replace(" ", "-").lower() }}-label" class="block-label selection-button-radio" for="{{ category['name'].replace(" ", "-").lower() }}">
+                      {{ category['display'] }}
+                    </label>
+                  </div>
+                {% endfor %}
+            </div>
+          </fieldset>
+          {% include 'partials/submit_form_partial.html' %}
+        </form>
+      </div>
+    </div>
+  </main>
+{% endblock %}

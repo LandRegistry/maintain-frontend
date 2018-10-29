@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}{% if edited_fields %}Confirm changes{% else %}Update local land charge{% endif %}{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+            <p><a id="back-to-search-link-top" href="{{ url_for('search.index') }}">Back to search results</a></p>
+            {% if edited_fields %}
+                <h1 class="heading-large">Confirm changes</h1>
+                <div class="panel panel-border-wide">
+                    <p>You have made the following changes, which have been highlighted in the table below:</p>
+                    <ul>
+                        {% for field in edited_fields %}
+                            <li><a href="#{{ field }}" id="{{ field }}-change-link">{{ map[field].value }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <h1 class="heading-large">Update local land charge</h1>
+
+                {% if not charge_item.end_date %}
+                    <div class="panel panel-border-wide">
+                        <p>
+                            <a href="{{ url_for('cancel_land_charge.cancel_charge', charge_id=charge_id) }}" id="cancel-charge">Cancel charge</a>
+                        </p>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if charge_item.end_date %}
+                <div class="panel panel-border-wide">
+                    <p class="bold-small">
+                        This charge was cancelled on {{ charge_item.end_date.strftime('%d %B %Y').lstrip("0") }}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include 'partials/modify_charge_partial.html' %}
+    <p><a id="return-home-link" href="{{ url_for('home.get') }}">Return to main menu</a></p>
+</main>
+<!-- View Page Functionality -->
+<input type="hidden" name="charge_extent" id="charge_extent" value="{{ geometry }}">
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_layer_styles.js') }}"></script>
+    <script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_charge.js') }}"></script>
+{% endblock %}
+
+

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Charge description{% endblock %}
+
+{% block body %}
+  <main id="content" role="main">
+      {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+
+        <h1 class="heading-large">Charge description (optional)</h1>
+
+        <form action="{{ submit_url }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <fieldset class="inline">
+            <div class="form-group {% if validation_errors and validation_errors['charge-description'] %} form-group-error {% endif %}">
+              {% if validation_errors and validation_errors['charge-description'] %}
+                  <span class="error-message"
+                      id="error-message-reference">{{ validation_errors['charge-description'].inline_message }}</span>
+              {% endif %}
+            <legend class="visually-hidden" aria-hidden="true">Add any other information about this charge</legend>
+
+            <span class="form-hint">Any other information about this charge. This can be information that will help someone researching this charge. You shouldn't include personal information here, for example a telephone number or email.</span>
+
+            <div class="form-group">
+              <label for="charge-description" hidden>Description of the charge</label>
+
+              <textarea id="charge-description"
+                  name="charge-description"
+                  rows="5"
+                  class="form-control form-control-3-4">{% if data %}{{ data }}{% endif %}</textarea>
+
+              <p><span class="form-hint">Answer must be shorter than 1500 characters (about 250 words)</span></p>
+            </div>
+          </fieldset>
+
+          {% include 'partials/submit_form_partial.html' %}
+
+        </form>
+      </div>
+    </div>
+
+
+
+  </main>
+{% endblock %}

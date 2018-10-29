@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Draw an extent{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+<main id="content">
+    <div>
+        <div id="search-error"></div>
+        {% include 'partials/phase_banner_beta.html' %}
+    </div>
+
+    <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+    </div>
+
+    {% if is_valid_search_extent == False %}
+        <br>
+        <div id="location-confirmation-warning" class="panel panel-border-wide bold">
+            <p>Your search extent is in a non-migrated area. Contact the authority to complete your search.</p>
+        </div>
+    {% endif %}
+    <div class="column-full">
+    <h1 class="heading-large">Draw an extent</h1>
+
+    <!-- Map -->
+    <span class="form-label">
+        {% if coordinates %}
+        <p>This map shows {{ coordinates.location }}</p>
+        {% endif %}
+        <p>Use the buttons on this map to draw the search extent.</p>
+    </span>
+
+    <div class="container">
+        <div id="map-nav" class="maintain-map form-group {% if validation_errors and validation_errors['map'] %} form-group-error {% endif %}">
+            {% if validation_errors and validation_errors['map'] %}
+                <span class="error-message"
+                    id="error-message-reference">{{ validation_errors['map'].inline_message }}</span>
+            {% endif %}
+            {% include "map.html" %}
+        </div>
+    </div>
+
+    <form method="POST" action="{{ submit_url }}" onsubmit="populate_geometries('saved-features')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    	<input type="hidden" name="saved-features" id="saved-features" value=""/>
+        <input type="hidden" name="coordinates" id="coordinates" value="{% if coordinates %}{{ coordinates.coordinates }}{% endif %}"/>
+	    <input type="submit" value="Continue" class="button"/>
+    </form>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+    <!-- Custom Map Styles -->
+    <script src="{{ url_for('add_land_charge.static', filename='js/map_styles.js') }}"></script>
+    <!-- Submit geometries -->
+    <script src="{{ url_for('add_land_charge.static', filename='js/save_geometries.js') }}"></script>
+    <!-- Map helpers -->
+    <script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+    <script src="{{ url_for('add_land_charge.static', filename='js/add_location.js') }}"></script>
+
+    <script>
+        $(function () {
+            // LLC1 Map Controls
+            var controls = new MAP_CONTROLS.Controls([
+                MAP_CONTROLS.polygon_button(),
+                MAP_CONTROLS.edit_button(),
+                MAP_CONTROLS.copy_button(),
+                MAP_CONTROLS.remove_button(),
+                MAP_CONTROLS.remove_all_button(),
+                MAP_CONTROLS.undo_button(),
+                MAP_CONTROLS.snap_to()
+            ]);
+
+            MAP_HELPERS.init_controls(map, controls);
+        });
+
+        coor_text = document.getElementById('coordinates').value;
+        if(coor_text !== '') {
+            coordinates = JSON.parse(coor_text);
+            var extent = new ol.extent.boundingExtent(coordinates)
+            map.getView().fit(extent, {duration: 1, maxZoom: 15});
+        } else {
+            var is_lr = {{ 'true' if g.session.user.is_lr() else 'false' }}
+            var organisation = "{{ g.session.user.organisation | string() }}"
+            MAP_HELPERS.zoom_to_boundary(is_lr, organisation)
+        }
+    </script>
+
+    {% if information %}
+
+        <script type="text/javascript">
+            $(function(){
+                load_previous_data("{{information}}");
+            });
+        </script>
+
+    {% endif %}
+{% endblock %}

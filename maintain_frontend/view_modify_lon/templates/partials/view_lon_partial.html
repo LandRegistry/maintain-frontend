@@ -1,0 +1,418 @@
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-id-header">HM Land Registry reference</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-id-data">{{ charge_id }}</p>
+        <a class="font-small" href="{{ url_for('view_land_charge.history', charge_id=charge_id) }}">View history</a>
+    </div>
+</div>
+
+<!-- About the charge -->
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">About this charge</h2>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="charge-type-header">Charge type</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-type-data">{{ charge_item.charge_type }} (LON)</p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="charge-statutory-provision-header">Law</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-statutory-provision-data">
+            {% if charge_item.statutory_provision %}
+                {{ charge_item.statutory_provision }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="charge-instrument-header">Legal document</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-instrument-data">
+            {% if charge_item.instrument %}
+                {{ charge_item.instrument }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="registration-date-header">Registered on</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="registration-date-data">{{ charge_item.registration_date.strftime('%-d %B %Y') }}</p>
+    </div>
+</div>
+
+{% if updated %}
+    <div class="grid-row">
+        <div class="column-third">
+            <h3 class="margin-top-small" id="updated-date-header">Updated on</h3>
+        </div>
+        <div class="column-two-thirds">
+            <p class="bold-small" id="updated-date-data">{{ updated_date }}</p>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Applicant Info -->
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">Person applying for this LON</h2>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="applicant-name-header">Name</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="applicant-name-data">
+           {% if charge_item.applicant_name %}
+                {{ charge_item.applicant_name }}
+            {% else %}
+                Not provided
+            {% endif %} 
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="applicant-address-header">Address</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="applicant-address-data">
+            {% if charge_item.applicant_address['line-1'] %}
+                {{ charge_item.applicant_address['line-1'] }}
+                {% if charge_item.applicant_address['line-2'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-2'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-3'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-3'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-4'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-4'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-5'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-5'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-6'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-6'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['postcode'] %}
+                    <br>
+                    {{ charge_item.applicant_address['postcode'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['country'] %}
+                    <br>
+                    {{ charge_item.applicant_address['country'] }}
+                {% endif %}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+
+<!-- Dominant Building -->
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">Dominant building (building losing access to light)</h2>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="charge-geographic-description-header">Address</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="charge-geographic-description-data">
+            {% if charge_item.charge_address %}
+                {{ charge_item.charge_address['line-1'] }}
+                {% if charge_item.charge_address['line-2'] %}<br/>{{ charge_item.charge_address['line-2'] }}{% endif %}
+                {% if charge_item.charge_address['line-3'] %}<br/>{{ charge_item.charge_address['line-3'] }}{% endif %}
+                {% if charge_item.charge_address['line-4'] %}<br/>{{ charge_item.charge_address['line-4'] }}{% endif %}
+                {% if charge_item.charge_address['line-5'] %}<br/>{{ charge_item.charge_address['line-5'] }}{% endif %}
+                {% if charge_item.charge_address['line-6'] %}<br/>{{ charge_item.charge_address['line-6'] }}{% endif %}
+                <br/>{{ charge_item.charge_address['postcode'] }}
+            {% elif charge_item.charge_geographic_description %}
+                {{ charge_item.charge_geographic_description }}
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <div id="map-view-charge" aria-label="Image showing charge extent" role="img">
+            {% include "map.html" %}
+        </div>
+    </div>
+</div>
+
+<!-- Servient Land Development -->
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">Servient land development (development that will block the light)</h2>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="structure-dimension-header">Height</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="structure-dimension-data">
+            {% if charge_item.structure_position_and_dimension['height'] %}
+                {{ charge_item.structure_position_and_dimension['height'] }}
+                {% if charge_item.structure_position_and_dimension['units'] %}
+                    {{ charge_item.structure_position_and_dimension['units'] }}
+                {% endif %}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="structure-position-header">Covers all or part of extent</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="structure-position-data">
+            {% if charge_item.structure_position_and_dimension['extent-covered'] != 'All of the extent' %}
+                {% if charge_item.structure_position_and_dimension['part-explanatory-text'] %}
+                    {{ charge_item.structure_position_and_dimension['part-explanatory-text'] }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            {% else %}
+                {{ charge_item.structure_position_and_dimension['extent-covered'] }}
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="servient-land-interest-description-header">Interest in land</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="servient-land-interest-description-data">
+            {% if charge_item.servient_land_interest_description %}
+                {{ charge_item.servient_land_interest_description }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<!-- Documents -->
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">Legal documents for this LON</h2>
+    </div>
+</div>
+
+<!-- Documents: Temporary Certificate -->
+{% if charge_item.documents_filed['temporary-certificate'] %}
+<div class="grid-row">
+    <div class="column-full">
+        <h3 class="heading-small">Temporary Certificate</h3>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="tribunal-temporary-certificate-date-header">Issue date</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="tribunal-temporary-certificate-date-data">
+            {{ charge_item.tribunal_temporary_certificate_date.strftime('%-d %B %Y') }}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="tribunal-temporary-certificate-expiry-date-header">Expiry date</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="tribunal-temporary-certificate-expiry-date-data">
+            {{ charge_item.tribunal_temporary_certificate_expiry_date.strftime('%-d %B %Y') }}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="tribunal-temporary-certificate-doc-header">Link to document</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="tribunal-temporary-certificate-doc-data">
+            {% for url in document_urls['temporary-certificate'] %}
+                <a href="{{ url }}">Temporary Certificate</a>
+            {% endfor %}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{% if charge_item.documents_filed['definitive-certificate'] %}
+<!-- Documents: Definitive Certificate -->
+<div class="grid-row">
+    <div class="column-full">
+        <h3 class="heading-small">Definitive Certificate</h3>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="tribunal-definitive-certificate-date-header">Issue date</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="tribunal-definitive-certificate-date-data">
+            {% if charge_item.tribunal_definitive_certificate_date %}
+                {{ charge_item.tribunal_definitive_certificate_date.strftime('%-d %B %Y') }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="expiry-date-header">Expiry date</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="expiry-date-data">
+            {{ charge_item.expiry_date.strftime('%-d %B %Y') }}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="tribunal-definitive-certificate-date-doc-header">Link to document</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="tribunal-definitive-certificate-date-doc-data">
+            {% for url in document_urls['definitive-certificate'] %}
+                <a href="{{ url }}">Definitive Certificate</a>
+            {% endfor %}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Documents: Form A -->
+<div class="grid-row">
+    <div class="column-full">
+        <h3 class="heading-small">Form A</h3>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="form-a-doc-header">Link to document</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="form-a-doc-data">
+                {% for url in document_urls['form-a'] %}
+                    <a href="{{ url }}">Form A</a>
+                {% endfor %}
+        </p>
+    </div>
+</div>
+{% if charge_item.documents_filed['form-b'] %}
+<!-- Documents: Form B -->
+<div class="grid-row">
+    <div class="column-full">
+        <h3 class="heading-small">Form B</h3>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="form-b-doc-header">Link to document</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="form-b-doc-data">
+            {% for cert in charge_item.documents_filed['form-b'] %}
+                {% set form_b_path = config.STORAGE_API_URL + '/' + cert['reference'] %}
+                <a href="{{ form_b_path }}">Form B</a>
+            {% endfor %}
+            {% for url in document_urls['form-b'] %}
+                <a href="{{ url }}">Form A</a>
+            {% endfor %}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{% if charge_item.documents_filed['court-order'] %}
+<!-- Documents: Court Order -->
+<div class="grid-row">
+    <div class="column-full">
+        <h3 class="heading-small">Court Order</h3>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h4 class="margin-top-small" id="court-order-doc-header">Link to document</h4>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="court-order-doc-data">
+            {% for url in document_urls['court-order'] %}
+                <a href="{{ url }}">Court Order</a>
+            {% endfor %}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Further Information Location -->
+<div class="grid-row">
+    <div class="column-third">
+        <h3 class="margin-top-small bold" id="further-information-location-header">Documents available from</h3>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="further-information-location-data">
+            {% for line in charge_item.further_information_location.splitlines() %}
+                {{ line }}<br>
+            {% endfor %}
+        </p>
+    </div>
+</div>
+
+
+
+

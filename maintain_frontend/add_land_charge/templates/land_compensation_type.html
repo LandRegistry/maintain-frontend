@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Do you know the amount of the advance payment?{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+
+        <h1 class="heading-large">Do you know the amount of the advance payment?</h1>
+
+        <form action="{{ submit_url }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <fieldset>
+            <legend class="visually-hidden">Do you know the amount of the advance payment?</legend>
+              {% if validation_errors and validation_errors['advance-payment-known'] %}
+              <div id="land-compensation-error" class="form-group-error" style="height: 2em">
+                  <span class="error-message">{{ validation_errors['advance-payment-known'].inline_message }}</span>
+              </div>
+              {% endif %}
+              <div id="advance-payment-known" class="form-group {% if validation_errors and validation_errors['advance-payment-known'] %}form-group-error{% endif %}">
+                <div class="multiple-choice">
+                  <input id="yes" name="advance-payment-known" type="radio" value="Yes">
+                  <label id="yes-label" class="block-label selection-button-radio" for="yes">
+                    Yes
+                  </label>
+                </div>
+                <div class="multiple-choice">
+                  <input id="no" name="advance-payment-known" type="radio" value="No">
+                  <label id="no-label" class="block-label selection-button-radio" for="no">
+                    No
+                  </label>
+                </div>
+              </div>
+          </fieldset>
+
+          {% include 'partials/submit_form_partial.html' %}
+
+        </form>
+      </div>
+
+    </div>
+
+  </main>
+
+{% endblock %}

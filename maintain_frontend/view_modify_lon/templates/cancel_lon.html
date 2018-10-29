@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block title %}Upload a document{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                {% include 'partials/validation_partial.html' %}
+                <h1 class="heading-large">Upload a document</h1>
+                <form action="{{ url_for('cancel_lon.cancel_post', charge_id=charge_id) }}" method="POST" enctype=multipart/form-data>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                    <div  class="form-group {% if validation_errors and validation_errors['cancel-options'] %} form-group-error {% endif %}"
+                         id="cancel-options">
+                        <fieldset>
+                            <legend class="visuallyhidden">What do you want to do?</legend>
+
+                            {% if validation_errors and validation_errors['cancel-options'] %}
+                                    <span class="error-message" style="height:2em">{{ validation_errors['cancel-options'].inline_message }}</span>
+                            {% endif %}
+
+                            <div class ="multiple-choice" data-target="form-b-cancel-lon-extra-details">
+                                <input type="radio" name="cancel-options" value="Form B" id="cancel-form-b"
+                                        {% if request_body and "Form B" in request_body.getlist('cancel-options') %} checked {% endif %}>
+                                <label for="cancel-form-b">
+                                    <span class="heading-small">Form B</span>
+                                    <br>
+                                    This is an application to change or cancel a light obstruction notice
+                                </label>
+                            </div>
+                            <div class="panel panel-border-narrow js-hidden" id="form-b-cancel-lon-extra-details">
+                                <div class="form-group {% if validation_errors and validation_errors['form-b-cancel-lon-file-input'] %} form-group-error {% endif %}">
+
+                                    {% if validation_errors and validation_errors['form-b-cancel-lon-file-input'] %}
+                                        <span class="error-message">{{ validation_errors['form-b-cancel-lon-file-input'].inline_message }}</span>
+                                    {% endif %}
+                                    <label class="visually-hidden" for="form-b-cancel-lon-file-input">Form B</label>
+                                    <input type="file" name="form-b-cancel-lon-file-input" id="form-b-cancel-lon-file-input">
+                                </div>
+                            </div>
+
+                            <div class ="multiple-choice" data-target="court-order-cancel-lon-extra-details">
+                                <input type="radio" name="cancel-options" value="Court Order" id="cancel-court-order"
+                                        {% if request_body and "Court Order" in request_body.getlist('cancel-options') %} checked {% endif %}>
+                                <label for="cancel-court-order">
+                                    <span class="heading-small">Court Order</span>
+                                    <br>
+                                    The order allows someone to change or cancel the registration of a light obstruction notice
+                                </label>
+                            </div>
+                            <div class="panel panel-border-narrow js-hidden" id="court-order-cancel-lon-extra-details">
+                                <div class="form-group {% if validation_errors and validation_errors['court-order-cancel-lon-file-input'] %} form-group-error {% endif %}">
+
+                                    {% if validation_errors and validation_errors['court-order-cancel-lon-file-input'] %}
+                                        <span class="error-message">{{ validation_errors['court-order-cancel-lon-file-input'].inline_message }}</span>
+                                    {% endif %}
+                                    <label class="visually-hidden" for="court-order-cancel-lon-file-input">Court Order</label>
+                                    <input type="file" name="court-order-cancel-lon-file-input" id="court-order-cancel-lon-file-input">
+                                </div>
+                            </div>
+
+                            <div class="multiple-choice">
+                                <input type="radio" name="cancel-options" value="Cancel for another reason" id="cancel-other">
+                                <label for="cancel-other" class="form-label-bold">
+                                    Cancel for another reason
+                                </label>
+                            </div>
+                        </fieldset>
+                   </div>
+                    <div>
+                        <br>
+                        {% include 'partials/submit_form_partial.html' %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

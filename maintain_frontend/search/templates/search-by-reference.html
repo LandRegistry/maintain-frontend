@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block title %}Search by authority reference or HM Land Registry reference{% endblock %}
+
+{% block body %}
+
+<main id="content" role="main">
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+            <h1 class="heading-large">Search by authority reference or HM Land Registry reference</h1>
+
+            <form action="{{ submit_url }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <fieldset class="inline">
+                    <legend class="visually-hidden" aria-hidden="true">Search by authority reference or HM Land Registry reference</legend>
+
+                    <div class="form-group {% if validation_errors and validation_errors['search-reference'] %} form-group-error {% endif %}">
+                        <div class="search-bar">
+                            <label for="search-reference" class="visually-hidden" aria-hidden="true">Search by authority reference or HM Land Registry reference</label>
+                            <input type="text" id="search-reference" name="search-reference"  class="form-control search-field"/>
+                            <div class="search-bar-input">
+                                <button class="search-button" type="submit" id="continue">
+                                    <span class="visually-hidden">Search</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <details>
+                <summary>
+                    <span class="summary">What's the difference between an authority reference and a HM Land Registry reference?</span>
+                </summary>
+
+                <div class="panel panel-border-narrow">
+                    <p>- The HM Land Registry reference is the number you get when you add a charge.</p>
+                    <p>- An authority reference is the number used by your authority to find charge records.</p>
+                </div>
+            </details>
+
+            <div>
+                <p><a href="{{ url_for('search.index') }}">Or you can search on the map</a></p>
+            </div>
+        </div>
+    </div>
+    {% if charge_items is defined %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% if charge_items %}
+            <p>There are {{ charge_items | length }} charges that match this reference number.</p>
+            <ul class="list">
+                {% for charge in charge_items %}
+                {% set charge_id = (charge.local_land_charge | calc_display_id) %}
+                <li id="{{ charge_id }}">
+                    <a href="{{ url_for('view_land_charge.view_land_charge', local_land_charge=charge_id) }}">
+                        {{ charge.charge_type }}
+                    </a>
+                    <p>{{ charge.originating_authority }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <p>0 results found</p>
+                <p>Try using a different authority reference or HM Land Registry reference</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</main>
+
+{% endblock %}

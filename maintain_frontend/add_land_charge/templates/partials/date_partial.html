@@ -1,0 +1,41 @@
+<div class="form-group{% if validation_errors and validation_errors['date'] %} form-group-error {% endif %}">
+  <div class="form-date">
+
+
+
+    <div id="date" class="form-date">
+
+      <p class="form-hint">This is the date when the source document was created, not today's date. <br/> For example, 31 3 2016</p>
+        {% if validation_errors and validation_errors['date'] %}
+            <span class="error-message">{{ validation_errors['date'].inline_message }}</span>
+        {% endif %}
+
+      <div class="form-group form-group-day">
+        <label id="date-day" for="date-day-input">Day</label>
+        <input id="date-day-input"
+               type="number"
+               name="date-day"
+               value="{{ date.day }}"
+               class="form-control">
+      </div>
+
+      <div class="form-group form-group-month">
+        <label id="date-month" for="date-month-input">Month</label>
+        <input id="date-month-input"
+               type="number"
+               name="date-month"
+               value="{{ date.month }}"
+               class="form-control">
+      </div>
+
+      <div class="form-group form-group-year">
+        <label id="date-year" for="date-year-input">Year</label>
+        <input id="date-year-input"
+               type="number"
+               name="date-year"
+               value="{{ date.year }}"
+               class="form-control">
+      </div>
+    </div>
+  </div>
+</div>

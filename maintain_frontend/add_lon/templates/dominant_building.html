@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block title %}Do you have the address of the dominant building?{% endblock %}
+
+{% block body %}
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+
+            <div id="page-errors">
+                {% include 'partials/validation_partial.html' %}
+            </div>
+
+            <h1 class="heading-large">Do you have the address of the dominant building?</h1>
+
+            <p>This is the address of the land losing access to light.</p>
+
+            <form action="{{ submit_url }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <div class="form-group {% if validation_errors and validation_errors['have_address']%} form-group-error {% endif %}" id="have_address">
+                    {% if validation_errors and validation_errors['have_address'] %}
+                        <span class="error-message">{{ validation_errors['have_address'].inline_message }}</span>
+                    {% endif %}
+
+                    <fieldset>
+                        <legend class="visually-hidden">Do you have the address of the dominant building</legend>
+
+                        <div class="multiple-choice" data-target="dominant_address">
+                            <input id="do_have_address" name="have_address" type="radio" value="Yes"
+                                   {% if request_body and ("address_line_1" in request_body) %} checked {% endif %}>
+
+                            <label class="block-label selection-button-radio" for="do_have_address">Yes</label>
+                        </div>
+                        <div class="js-hidden" id="dominant_address">
+                            {% include 'charge_address_fields_partial.html' %}
+                        </div>
+
+                        <div class="multiple-choice" data-target="dominant_description">
+                            <input id="do_not_have_address" name="have_address" type="radio" value="No"
+                                   {% if request_body and ("charge_geographic_description" in request_body) %} checked {% endif %} >
+                            <label class="block-label selection-button-radio" for="do_not_have_address">No</label>
+                        </div>
+                        <div class="js-hidden" id="dominant_description">
+
+                            <fieldset>
+                                <div id="charge_geo_desc_div" class="form-group {% if validation_errors and validation_errors['charge_geographic_description']%} form-group-error {% endif %}">
+                                    <label class="form-label-bold" for="charge_geographic_description">Describe how to find this dominant building</label>
+                                     {% if validation_errors and validation_errors['charge_geographic_description'] %}
+                                        <span id="inline_error_message_desc" class="error-message">{{ validation_errors['charge_geographic_description'].inline_message }}</span>
+                                    {% endif %}
+                                    <textarea class="form-control form-control-3-4" name="charge_geographic_description" id="charge_geographic_description" rows="5" maxlength="1000">{% if request_body and request_body.charge_geographic_description %}{{ request_body.charge_geographic_description }}{% endif %}</textarea>
+                                    <p><span class="form-hint">Limit 1000 characters (about 160 words)</span></p>
+                                </div>
+                            </fieldset>
+                            <input id="submit-description" type="submit" value="Continue" class="button">
+                        </div>
+                    </fieldset>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('address_finder.static', filename='js/main.js') }}"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            address_finder.init();
+        });
+    </script>
+{% endblock %}

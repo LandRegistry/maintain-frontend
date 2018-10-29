@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block title %}View local land charge{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+<main id="content">
+  <div class="grid-row">
+    <div class="column-full">
+      {% include 'partials/phase_banner_beta.html' %}
+      <p><a id="back-to-search-link-top" href="{{ url_for('search.index') }}">Back to search results</a></p>
+      <h1 class="heading-large">View local land charge</h1>
+
+      {% if not charge_item.end_date %}
+        <div class="panel panel-border-wide">
+          {% if g.application_permissions.vary_llc in g.session.user.permissions %}
+            <p id="update-charge-link">
+              <a href="{{ url_for('modify_land_charge.modify_land_charge', local_land_charge=charge_id) }}">Update charge</a>
+            </p>
+          {% endif %}
+          {% if g.application_permissions.cancel_llc in g.session.user.permissions %}
+            <p id="cancel-charge-link">
+              <a href="{{ url_for('cancel_land_charge.cancel_charge', charge_id=charge_id) }}">Cancel charge</a>
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if charge_item.end_date %}
+        <div class="panel panel-border-wide">
+          <p id="charge-was-cancelled" class="bold-small">
+            This charge was cancelled on {{ charge_item.end_date.strftime('%-d %B %Y') }}
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  {% include 'partials/view_charge_partial.html' %}
+
+  <p><a id="return-home-link" href="{{ url_for('home.get') }}">Return to main menu</a></p>
+
+</main>
+<!-- View Page Functionality -->
+<input type="hidden" name="charge_extent" id="charge_extent" value="{{ geometry }}">
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_layer_styles.js') }}"></script>
+    <script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_charge.js') }}"></script>
+{% endblock %}

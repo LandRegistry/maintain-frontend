@@ -1,0 +1,147 @@
+<div id="full-screen-map-sidebar" style="display: none" data-bind="visible: true, event: { mouseover: resetHighlightedFeature() }">
+  <!-- Search Error Heading -->
+  <!-- ko if: errorMessage -->
+    <div id="error-summary" class="error-summary">
+      <h2 id="error-summary-heading" class="heading-medium error-summary-heading"> There are errors on this page </h2>
+      <ul id="error-summary-list" class="error-summary-list">
+        <li><a href="#search-field" data-bind="text: errorMessage"></a></li>
+      </ul>
+    </div>
+  <!-- /ko -->
+
+  <!-- ko if: charges().length == 0 -->
+  <h1 class="heading-medium">Search by postcode, street name or town</h1>
+  <!-- /ko -->
+
+  <!-- ko if: charges().length > 0 -->
+  <h2 class="heading-medium">Search again</h2>
+  <!-- /ko -->
+
+  <!-- Search input. -->
+  <fieldset id="search-fieldset" data-bind="css: { 'form-group-error': errorMessage() }">
+    <legend class="visually-hidden">Search for land charges</legend>
+    <!-- Search Error Inline Message -->
+    <!-- ko if: errorMessage -->
+      <span class="error-message" id="error-message-search" data-bind="text: errorMessage"></span>
+    <!-- /ko -->
+
+    <label for="search-field" class="visually-hidden">
+      Find map location by postcode, street name or town
+    </label>
+
+    <div class="search-bar">
+      <input class="form-control search-field map__search_term" id="search-field" name="search" type="text" value="" autofocus="autofocus"
+        data-bind="event: { keyup: flexSearchAddresses }">
+      <div class="search-bar-input">
+        <button class="search-button map__search_button" type="button" name="search" id="search-button" data-bind="click: flexSearchAddresses">
+          <span class="visually-hidden">Search</span>
+        </button>
+      </div>
+    </div>
+  </fieldset>
+
+  <p>
+    <br />
+    <a href="{{ url_for('search.get_search_by_reference') }}">Search by reference</a>
+  </p>
+
+  <!-- ko if: noChargesFound -->
+  <div>
+    <br/>
+    <p><span class="bold">0 results found </span><br/>
+    Change your search and try again.</p>
+  </div>
+  <!-- /ko -->
+
+  <!-- ko if: resultLimitExceeded -->
+  <div>
+    <br/>
+    <p><span class="bold">Too many results. Draw a smaller extent.</span>
+  </div>
+  <!-- /ko -->
+
+  <!-- ko if: addresses().length -->
+    <div>
+      <h4 class="heading-small">Choose an address from the list</h4>
+
+      <ul class="list" data-bind="foreach: addresses">
+        <li><a href="#" data-bind="text: address, click: $parent.flexSelectAddress"></a></li>
+      </ul>
+    </div>
+  <!-- /ko -->
+
+  <!-- ko if: showSelectedAddress-->
+    <div id="selected-address-help-text">
+      <h4 class="heading-small">This is the map for <span data-bind="text: selectedAddress"></span></h4>
+      <p>Use the map controls to draw an extent around the area you want to search.</p>
+      <p>You will see a list of charges in this area.</p>
+    </div>
+  <!-- /ko -->
+
+  <!-- ko if: showDrawHelpText -->
+    <div>
+      <p>
+        Or use the map controls to find the location you are looking for and draw an extent around the area you want to search.
+        You will see a list of charges in this area.
+      </p>
+    </div>
+  <!-- /ko -->
+
+  <!-- ko if: charges().length -->
+  <h1 class="heading-small"><span data-bind="text: charges().length"></span> Charges in this area</h1>
+
+  <div class="accordion with-js" id="filter-accordion">
+    <div class="accordion-section" aria-expanded="true">
+
+      <div class="accordion-section-header" data-bind="click: toggleFilterSection, event: { keypress: toggleFilterKeyPress }">
+        <h2 class="heading-small">Filter this map by</h2>
+        <span class="icon" tabindex="0" aria-label="Show or hide map filters"></span>
+      </div>
+      <div class="accordion-section-body">
+        <div>
+          <span id="select-all-filter"><a href="#" data-bind="click: selectAllFilters">Select all</a></span>
+          <span><a href="#" data-bind="click: deselectAllFilters">Deselect all</a></span>
+        </div>
+        <form>
+          <div id="search-filters">
+            <fieldset data-bind="foreach: categories">
+              <legend class="visually-hidden" data-bind="text: name"></legend>
+              <!-- ko if: charges().length  -->
+                <div>
+                  <input data-bind="attr: { id: filterId, value: name }, checked:checked" name="charge-types" type="checkbox">
+                  <label data-bind="attr: { for: filterId }, text: categoryHeader"></label>
+                </div>
+              <!-- /ko -->
+            </fieldset>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="accordion with-js" id="result-accordion">
+    <div class="accordion-controls">
+      <button class="accordion-expand-all" aria-expanded="false" data-bind="click: openCloseAll">Open all</button>
+    </div>
+    <!-- ko foreach: categories -->
+      <!-- ko if: charges().length  -->
+        <div class="accordion-section" aria-expanded="false" data-bind="attr: { id: sectionId }">
+          <div class="accordion-section-header" data-bind="click: toggleCategorySection, event: { keypress: toggleCategoryKeyPress }">
+            <h2 class="heading-small" data-bind="text: categoryHeader"></h2>
+            <span class="icon" tabindex="0" aria-label="Show or hide charge information"></span>
+          </div>
+          <div class="accordion-section-body">
+            <ul class="list" data-bind="foreach: charges">
+              <li data-bind="attr: { id: id }, event: { mouseover: highlight, mouseout: removeHighlight }">
+                <a data-bind="text: 'Authority reference: ' + reference, attr: { href: '/view-local-land-charge/' + id }"></a><br>
+                <span data-bind="trimText: chargeGeographicDescription"></span><br>
+              </li>
+            </ul>
+          </div>
+        </div>
+      <!-- /ko -->
+    <!-- /ko -->
+  </div>
+  <!-- /ko -->
+</div>

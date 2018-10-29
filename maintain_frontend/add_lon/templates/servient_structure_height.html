@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block title %}What height is the servient structure?{% endblock %}
+
+{% block body %}
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+            <h1 class="heading-large">What height is the servient structure?</h1>
+
+            <form action="{{ submit_url }}" method="POST" class="form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <p>This is the height of the structure in the proposed development.</p>
+
+                <div class="form-group {% if validation_errors and validation_errors['measurement']%} form-group-error {% endif %}"
+                    id="measurement">
+                    {% if validation_errors and validation_errors['measurement'] %}
+                    <span class="error-message">{{ validation_errors['measurement'].inline_message }}</span>
+                    {% endif %}
+
+                    <fieldset>
+                        <legend class="visually-hidden">What height is the servient structure</legend>
+
+                        <div class ="multiple-choice">
+                            <input id="unlimited_height" name="measurement" type="radio" value="Unlimited height"
+                                   {% if request_body and (request_body.measurement == "Unlimited height") %} checked {% endif %}>
+
+                            <label class="block-label selection-button-radio" for="unlimited_height">Unlimited height</label>
+                        </div>
+
+                        <div class ="multiple-choice" data-target="height_measurements_details">
+                            <input id="specific_height" name="measurement" type="radio" value="I have measurements for the height"
+                                   {% if request_body and (request_body.measurement == "I have measurements for the height") %} checked {% endif %} >
+                            <label class="block-label selection-button-radio" for="specific_height">I have measurements for the height</label>
+                        </div>
+
+                        <div class="panel panel-border-narrow js-hidden {% if validation_errors and validation_errors['height'] %} form-group-error {% endif %}" id="height_measurements_details">
+                            {% if validation_errors and validation_errors['height'] %}
+                            <span class="error-message">{{ validation_errors['height'].inline_message }}</span>
+                            {% endif %}
+                            <div class="form-group column-one-quarter">
+                                <label for="height" class="form-label">Height</label>
+                                <input id="height"
+                                       name="height"
+                                       type="number"
+                                       class="form-control form-control-3-4"
+                                       {% if request_body %}
+                                       value="{{ request_body.height }}"
+                                       {% endif %}>
+                            </div>                                           
+
+                            <div class="form-group column-one-half">
+                                <label for="unit" class="form-label">Measured in</label>
+                                <select id="unit" name="unit" class="form-control form-control-1-2">
+                                    <option value="Metres" {% if request_body and request_body.unit == "Metres" %}selected{% endif %}>Metres</option>
+                                    <option value="Feet" {% if request_body and request_body.unit == "Feet" %}selected{% endif %}>Feet</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                {% include 'partials/submit_form_partial.html' %}
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

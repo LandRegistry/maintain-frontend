@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Land sold to the authority{% endblock %}
+
+{% block body %}
+  <main id="content" role="main">
+      {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+
+        <h1 class="heading-large">Land sold to the authority</h1>
+
+        <form action="{{ submit_url }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <fieldset class="inline">
+            <div class="form-group {% if validation_errors and validation_errors['land-sold-description'] %} form-group-error {% endif %}">
+              {% if validation_errors and validation_errors['land-sold-description'] %}
+                  <span class="error-message"
+                      id="error-message-reference">{{ validation_errors['land-sold-description'].inline_message }}</span>
+              {% endif %}
+              <legend class="visually-hidden" aria-hidden="true">Describe the land sold</legend>
+            
+              
+              <div class="form-group">
+                <label class="form-label-bold" for="land-sold-description">Describe the land sold</label>
+                <span class="form-hint">For example, land on the north side of Smith Street</span>
+
+                <textarea id="land-sold-description"
+                    name="land-sold-description"
+                    rows="5"
+                    class="form-control form-control-3-4">{% if request_body['land-sold-description'] %}{{ request_body['land-sold-description'] }}{% endif %}</textarea>
+
+                <p><span class="form-hint">Answer must be shorter than 400 characters (about 60 words)</span></p>
+              </div>
+            </div>
+
+            <div class="form-group {% if validation_errors and validation_errors['land-works-particulars'] %} form-group-error {% endif %}">
+                {% if validation_errors and validation_errors['land-works-particulars'] %}
+                    <span class="error-message"
+                        id="error-message-reference">{{ validation_errors['land-works-particulars'].inline_message }}</span>
+                {% endif %}
+                <legend class="visually-hidden" aria-hidden="true">What work will the authority do on this land?</legend>
+              
+                
+                <div class="form-group">
+                  <label class="form-label-bold" for="land-works-particulars">What work will the authority do on this land?</label>
+                  <span class="form-hint">For example, the construction of a bypass</span>
+  
+                  <textarea id="land-works-particulars"
+                      name="land-works-particulars"
+                      rows="5"
+                      class="form-control form-control-3-4">{% if request_body['land-works-particulars'] %}{{ request_body['land-works-particulars'] }}{% endif %}</textarea>
+  
+                  <p><span class="form-hint">Answer must be shorter than 400 characters (about 60 words)</span></p>
+              </div>
+          </fieldset>
+
+          {% include 'partials/submit_form_partial.html' %}
+
+        </form>
+      </div>
+    </div>
+
+
+
+  </main>
+{% endblock %}

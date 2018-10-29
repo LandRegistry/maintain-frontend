@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block title %}Confirm the law{% endblock %}
+
+{% block body %}
+  <main id="content">
+    <div class="grid-row">
+      <div class="column-full">
+        {% include 'partials/phase_banner_beta.html' %}
+      </div>
+    </div>
+    <div class="grid-row">
+      <div class="column-two-thirds">
+      {% include 'partials/validation_partial.html' %}
+        <h1 class="heading-large">Confirm the law</h1>
+        <p>We found more than 1 law for your charge, based on your choice of:<br>
+          <span class="bold-small" id="charge-subcategory-selected">{{ category }}</span>.</p>
+        <form action="{{ url_for('add_land_charge.post_law') }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <fieldset>
+            <legend class="visually-hidden">Confirm the law?</legend>
+            {% if validation_errors and validation_errors['confirm-law'] %}
+              <div id="confirm-law-error" class="form-group-error" style="height: 2em">
+                <span class="error-message">{{ validation_errors['confirm-law'].inline_message }}</span>
+              </div>
+            {% endif %}
+            <div id="confirm-law" class="form-group {% if validation_errors and validation_errors['confirm-law'] %}form-group-error{% endif %}">
+              {% for law in laws %}
+                <div class="multiple-choice">
+                  <input id="{{ law.replace(" ", "-").lower() }}" name="confirm-law-option" type="radio" value="{{ law }}">
+                  <label id="{{ law.replace(" ", "-").lower() }}-label" class="block-label selection-button-radio" for="{{ law.replace(" ", "-").lower() }}">
+                    {{ law }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <p>{% include 'partials/submit_form_partial.html' %}</p>
+          <p><a href="{{ url_for('add_land_charge.new') }}">Choose a different charge category</a></p>
+          <p>or</p>
+          <p><a href="{{ url_for('add_land_charge.search_law') }}">Search for the law</a></p>
+        </form>
+      </div>
+    </div>
+  </main>
+{% endblock %}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8"/>
+  <title>{% block title %}{% endblock %} - Maintain Local Land Charges</title>
+  {% include "styles.html" %}
+  {% block head %}{% endblock %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="{{ config.STATIC_CONTENT_URL }}/images/opengraph-image.png">
+</head>
+
+{% if isMapPage %}<body id ="full-screen-map-body">{% else %}<body>{% endif %}
+  <div id="skiplink-container">
+    <div>
+      <a href="#content" class="skiplink">{{ skip_link_message|default('Skip to main content') }}</a>
+    </div>
+  </div>
+
+  <div id="global-cookie-message">
+    <p>GOV.UK uses cookies to make the site simpler.
+      <a href="/cookies" title="Find out more about cookies">Find out more about cookies</a>
+    </p>
+  </div>
+
+  {% include "marginals/header.html" %}
+
+  {% block body %}{% endblock %}
+
+  {% if isMapPage %}
+    {% include "marginals/full-page-map-footer.html" %}
+  {% else %}
+    {% include "marginals/footer.html" %}
+  {% endif %}
+
+  <script>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled')
+  </script>
+  {% include "scripts.html" %}
+  {% block scripts %}{% endblock %}
+</body>

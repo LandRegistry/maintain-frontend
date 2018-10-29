@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block title %}Manage source information{% endblock %}
+
+{% block body %}
+
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-large">Manage source information</h1>
+            <p>You can add up to {{config.SOURCE_INFORMATION_LIMIT}} sources. These sources will show:</p>
+
+            <ul class="list list-bullet">
+                <li>when you add a new charge (choose one from your list)</li>
+                <li>on an official search result (to help someone who needs more
+                    information about a charge)</li>
+            </ul>
+
+            {% if source_information_list %}
+            <table>
+                <tbody>
+                {% for source_information in source_information_list %}
+                    <tr>
+                        <td scope="row">
+                            {{ source_information['source-information'] }}
+                        </td>
+                        <td class="source-information-action">
+                            <form name="update-source-information-{{ source_information['id'] }}"
+                                  action="{{ url_for('source_info.post_source_information') }}" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="hidden" name="source-information-id" value="{{ source_information['id'] }}"/>
+                                <input type="hidden" name="source-information" value="{{ source_information['source-information'] }}"/>
+                                <input id="update-link" class="link" name="submit" type="submit" value="Update"/>
+                            </form>
+                        </td>
+                        <td class="source-information-action">
+                            <form name="delete-source-information-{{ source_information['id'] }}"
+                                  action="{{ url_for('source_info.post_source_information') }}" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="hidden" name="source-information-id" value="{{ source_information['id'] }}"/>
+                                <input type="hidden" name="source-information" value="{{ source_information['source-information'] }}"/>
+                                <input id="delete-link" class="link" name="submit" type="submit" value="Delete"/>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <br/>
+            {% else %}
+                <p class="bold-small">You don't have any source information added at the moment</p>
+            {% endif %}
+
+            {% if source_information_list|length == config.SOURCE_INFORMATION_LIMIT|int %}
+                <div class="notice">
+                    <i class="icon icon-important">
+                        <span class="visually-hidden">Warning</span>
+                    </i>
+                    <strong class="bold-small">
+                        Your list of source information is complete
+                    </strong>
+                    <strong class='small'>
+                        You have {{config.SOURCE_INFORMATION_LIMIT}} sources. If you want to add another you can delete a source or edit an existing source
+                    </strong>
+                </div>
+                <br>
+            {% endif %}
+
+            {% if source_information_list|length < config.SOURCE_INFORMATION_LIMIT|int %}
+                <p><a id="add-source-info-link" href="{{ url_for('source_info.get_add_source_information') }}" class="button">Add source information</a></p>
+            {% endif %}
+            <p>
+                {% if source_information_list|length < config.SOURCE_INFORMATION_LIMIT|int %}
+                or <a href="{{ url_for('home.get') }}">return to menu</a>
+                {% else %}
+                <a href="{{ url_for('home.get') }}">Return to menu</a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

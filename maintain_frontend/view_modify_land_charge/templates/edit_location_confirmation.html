@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block title %}You might be updating a charge to be outside your authority{% endblock %}
+
+{% block page_title %}
+    Confirm location
+{% endblock %}
+
+{% block body %}
+
+    <main id="content">
+        {% include 'partials/phase_banner_beta.html' %}
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                {% include 'partials/validation_partial.html' %}
+
+                <h1 class="heading-xlarge" id="does_charge_expire">You might be updating a charge to be outside your authority</h1>
+                <form action="{{ submit_url }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="form-group">
+                        <div class="panel panel-border-wide bold" id="location-confirmation-warning">
+                            You can:
+                            <ul id="location-confirmation-list" class="list list-bullet bold">
+                                <li>edit your extent (so it is not outside your authority), or</li>
+                                <li>update this charge, but it won't show on a search result until the authority has moved to this register</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="grid-row">
+                            <div class="column-full">
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="form-group {% if validation_errors and validation_errors['location-confirmation'] %} form-group-error {% endif %}">
+                            {% if validation_errors and validation_errors['location-confirmation'] %}
+                                <span class="error-message" id="error-message-does_charge_expire">{{ validation_errors['location-confirmation'].inline_message }}</span>
+                            {% endif %}
+                            <div class="multiple-choice">
+                                <input id="location-confirmation" name="location-confirmation" type="checkbox" value="true">
+                                <label for="location-confirmation">I have the authority to update a charge in this location.</label>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {% include 'partials/submit_form_partial.html' %}
+                    </div>
+                    <div class="form-group">
+                        <p>or <a href="{{ url_for('modify_land_charge.get_location')}}">edit the extent</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

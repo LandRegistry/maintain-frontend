@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Confirm source information{% endblock %}
+
+{% block body %}
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-large">Confirm source information</h1>
+            <div class="panel panel-border-wide">
+                <p>Confirm that the information below is correct.</p>
+            </div>
+            <form action="{{ url_for('source_info.post_add_source_information_confirm') }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <div class="form-group">
+                    <table id="source-info-confirm-table">
+                        <tbody>
+                        <tr>
+                            <th class="bold-small" scope="row">Source information</th>
+                            <td>{{ source_information }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <input id="submit" type="submit" value="Confirm and add" class="button"/>
+                </div>
+                <div class="form-group">
+                    <p>or <a href="{{ url_for('source_info.get_add_source_information') }}">change this source</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block title %}Advance payment{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+
+        <h1 class="heading-large">Advance payment</h1>
+
+        <form action="{{ submit_url }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <fieldset>
+            <legend class="visually-hidden">Advance payment</legend>
+              <div class="form-group {% if validation_errors and validation_errors['land-compensation-paid'] %} form-group-error {% endif %}">
+
+                  <label class="form-label bold-small" for="land-compensation-paid"><span class="bold-small">Amount of the advance payment</span>
+                      <span class="form-hint"> For example, 90000</span>
+                  </label>
+
+                  {% if validation_errors and validation_errors['land-compensation-paid'] %}
+                  <span class="error-message"
+                        id="error-message-land-compensation-paid">{{ validation_errors['land-compensation-paid'].inline_message }}</span>
+                  {% endif %}
+
+                  <span>£</span>
+                  <input id="land-compensation-paid"
+                         class="form-control"
+                         name="land-compensation-paid"
+                         type="text"
+                         {% if request_body['land-compensation-paid'] %}
+                         value="{{ request_body['land-compensation-paid'] }}"
+                         {% endif %}>
+              </div>
+
+              <div class="form-group {% if validation_errors and validation_errors['amount-of-compensation'] %} form-group-error {% endif %}">
+                  <label class="form-label bold-small" for="amount-of-compensation"><span class="bold-small">Total compensation payable</span>
+                      <span class="form-hint"> For example, 100000</span>
+                  </label>
+
+                  {% if validation_errors and validation_errors['amount-of-compensation'] %}
+                  <span class="error-message"
+                        id="error-message-amount-of-compensation">{{ validation_errors['amount-of-compensation'].inline_message }}</span>
+                  {% endif %}
+                 
+                  <span>£</span>
+                  <input id="amount-of-compensation"
+                         class="form-control"
+                         name="amount-of-compensation"
+                         type="text"
+                         {% if request_body['amount-of-compensation'] %}
+                         value="{{ request_body['amount-of-compensation'] }}"
+                         {% endif %}>
+              </div>
+
+              <div id="land-compensation-amount-type" class="form-group">
+                  <div>
+                    <span class="bold-small">Is the total compensation agreed or estimated? (optional)</span>
+                  </div>
+                  <div class="multiple-choice">
+                  <input id="agreed" name="land-compensation-amount-type" type="radio" value="Agreed amount"
+                         {% if request_body and request_body['land-compensation-amount-type'] == "Agreed amount" %} checked {% endif %}>
+                  <label id="agreed-label" class="block-label selection-button-radio" for="agreed">
+                    agreed amount
+                  </label>
+                </div>
+                <div class="multiple-choice">
+                  <input id="estimated" name="land-compensation-amount-type" type="radio" value="Estimated amount"
+                         {% if request_body and request_body['land-compensation-amount-type'] == "Estimated amount" %} checked {% endif %}>
+                  <label id="estimated-label" class="block-label selection-button-radio" for="estimated">
+                    estimated amount
+                  </label>
+                </div>
+              </div>
+          </fieldset>
+
+          {% include 'partials/submit_form_partial.html' %}
+
+        </form>
+      </div>
+
+    </div>
+
+  </main>
+
+{% endblock %}

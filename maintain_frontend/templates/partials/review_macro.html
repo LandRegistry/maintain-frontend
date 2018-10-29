@@ -1,0 +1,101 @@
+{# A series of reusable macros used to build up the table rows for the review page in the add charge flow. #}
+
+{% macro key_cell(heading) -%}
+
+  <th class="bold-small">{{ heading }}</th>
+
+{%- endmacro %}
+
+{% macro value_cell(field, value, prefix='', suffix='') -%}
+
+  <td id="{{ field }}_value">
+    {{ prefix }}{{ value }}{{ suffix }}
+  </td>
+
+{%- endmacro %}
+
+{% macro multi_cell(field, value, prefix='', suffix='') -%}
+
+  <td id="{{ field }}_value">
+    {% for line in value %}
+      {{ prefix }}{{ line }}{{ suffix }}<br>
+    {% endfor %}
+  </td>
+
+{%- endmacro %}
+
+{% macro address_cell(field, address) -%}
+
+  <td id="{{ field }}_value">
+    {{ address['line-1'] }}
+    {% if address['line-2'] %}<br/>{{ address['line-2'] }}{% endif %}
+    {% if address['line-3'] %}<br/>{{ address['line-3'] }}{% endif %}
+    {% if address['line-4'] %}<br/>{{ address['line-4'] }}{% endif %}
+    {% if address['line-5'] %}<br/>{{ address['line-5'] }}{% endif %}
+    {% if address['line-6'] %}<br/>{{ address['line-6'] }}{% endif %}
+    <br/>{{ address['postcode'] }}
+  </td>
+
+{%- endmacro %}
+
+{% macro change_link_cell(heading, field, redirect_route) -%}
+
+  <td>
+    <a id="{{ field }}_change_button"
+       href="{{ url_for(redirect_route) }}"
+       class="bold">Change<span class="visually-hidden">{{ heading }}</span>
+    </a>
+  </td>
+
+{%- endmacro %}
+
+{% macro add_read_only_row(heading, field, value, prefix='', suffix='') -%}
+
+  <tr id="{{ field }}_row" {% if field in g.session.edited_fields %} class="highlight_row" {% endif %}>
+    {{ key_cell(heading) }}
+    {{ value_cell(field, value, prefix, suffix) }}
+
+    <td><span class="visually-hidden" >{{ heading }} cannot be edited</span></td>
+  </tr>
+
+{%- endmacro %}
+
+{% macro add_editable_row(heading, field, redirect_route, value, address=false, prefix='', suffix='') -%}
+
+  <tr id="{{ field }}_row" {% if field in g.session.edited_fields %} class="highlight_row" {% endif %}>
+    {{ key_cell(heading) }}
+    {% if address %}
+      {{ address_cell(field, value) }}
+    {% else %}
+      {{ value_cell(field, value, prefix, suffix) }}
+    {% endif %}
+    {{ change_link_cell(heading, field, redirect_route) }}
+  </tr>
+
+{%- endmacro %}
+
+{% macro add_editable_multi_row(heading, field, redirect_route, value, prefix='', suffix='') -%}
+
+<tr id="{{ field }}_row" {% if field in g.session.edited_fields %} class="highlight_row" {% endif %}>
+  {{ key_cell(heading) }}
+  {{ multi_cell(field, value, prefix, suffix) }}
+  {{ change_link_cell(heading, field, redirect_route) }}
+</tr>
+
+{%- endmacro %}
+
+{% macro add_map_row(heading, field, redirect_route) -%}
+
+  <tr id="{{ field }}_row" {% if field in g.session.edited_fields %} class="highlight_row" {% endif %}>
+    {{ key_cell(heading) }}
+    <td id="{{ field }}_value">
+      <div class="column-third">
+        <div id="map-view-charge" aria-label="Image showing charge extent" role="img">
+          {% include "map.html" %}
+        </div>
+      </div>
+    </td>
+    {{ change_link_cell(heading, field, redirect_route) }}
+  </tr>
+
+{%- endmacro %}

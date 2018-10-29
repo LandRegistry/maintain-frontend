@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block title %}Source information{% endblock %}
+{% block head %}
+    <link rel=stylesheet media="screen" type=text/css
+          href="{{ config.STATIC_CONTENT_URL }}/stylesheets/govuk-template.css">
+{% endblock %}
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                {% include 'partials/validation_partial.html' %}
+                <h1 class="heading-large">Source information</h1>
+
+                <form action="{{ submit_url }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <fieldset>
+                        <legend class="hidden">Where can you find more information about this charge</legend>
+                        <div class="form-group">
+                            <label class="form-label bold-small" for="additional-info"><span class="bold-small">Where can you find more information about this charge?</span>
+                                <span class="form-hint">This can be a department name and address and/or a link to a place where charge documents are kept online, for example a planning portal.</span>
+                            </label>
+                            {%  if source_information_list %}
+                                    <div id="source-information-panel" class="hidden">
+                                        <div class="panel panel-narrow">
+                                            <span>You can:</span>
+                                            <ul class="list list-bullet">
+                                                <li>choose a source, or</li>
+                                                <li>add a new source</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                            {% endif %}
+                            <div id="additional-info-error" class="form-group {% if validation_errors and validation_errors['additional-info-error'] %} form-group-error {% endif %}">
+                                {%  if source_information_list %}
+                                    <div id="select-source-information" class="hidden">
+                                        <label class="hidden" for="source-information-dropdown">
+                                            <span>Choose a default source information fron the drop down below</span>
+                                        </label>
+                                        <select id="source-information-dropdown" class="form-control form-control-3-4">
+                                            <option selected disabled>Choose a source</option>
+                                            {% for source in source_information_list %}
+                                                <option  value="{{ source }}">{{ source | truncate(75) }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                        <p><span>You can edit this source before you continue.</span></p>
+                                    </div>
+                                {% endif %}
+
+                                {% if validation_errors and validation_errors['additional-info-error'] %}
+                                    <span class="error-message">{{ validation_errors['additional-info-error'].inline_message }}</span>
+                                {% endif %}
+
+                                <textarea id="additional-info"
+                                          name="additional-info"
+                                          rows="8"
+                                          class="form-control form-control-3-4">{% if information %}{{ information }}{% endif %}</textarea>
+                            </div>
+                            <p><span class="form-hint">Answer must be shorter than 500 characters (about 85 words)</span></p>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="hidden">Authority Reference</legend>
+                        <div class="form-group {% if validation_errors and validation_errors['reference'] %} form-group-error {% endif %}">
+
+                            <label class="form-label bold-small" for="reference"><span class="bold-small">Authority reference</span> (optional)
+                                <span class="form-hint"> This is the reference used by this department when they want to find the charge record</span>
+                            </label>
+
+                            {% if validation_errors and validation_errors['reference'] %}
+                                <span class="error-message">{{ validation_errors['reference'].inline_message }}</span>
+                            {% endif %}
+
+                            <input id="reference"
+                                   class="form-control"
+                                   name="reference"
+                                   type="text"
+                                    {% if reference %}
+                                   value="{{ reference }}"
+                                    {% endif %}>
+                        </div>
+                    </fieldset>
+                    {% include 'partials/submit_form_partial.html' %}
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+    {%  if source_information_list %}
+        <script type="text/javascript">
+            $(function(){
+                $('#source-information-panel').removeClass('hidden');
+                $('#select-source-information').removeClass('hidden');
+                $('#source-information-dropdown').change(function(){
+                    $('#additional-info').val($(this).val())
+                })
+            });
+        </script>
+    {% endif %}
+{% endblock %}

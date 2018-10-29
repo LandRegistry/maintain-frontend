@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Confirm cancellation{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+                <h1 class="heading-large">Confirm cancellation</h1>
+                <h2 class="heading-medium">Are you sure you want to cancel this charge?</h2>
+                <br>
+                {% include 'partials/cancel_charge_partial.html' %}
+                <form class="form-horizontal" id="cancelform" method="POST" action="{{ url_for('cancel_land_charge.cancel_charge', charge_id=charge_id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <p><button class="button" type="submit" id="btnYes">Yes, I want to cancel it</button></p>
+                    <p><a href="{{ url_for('view_land_charge.view_land_charge', local_land_charge=charge_id) }}">No, I don't want to cancel it</a></p>
+                </form>
+            </div>
+        </div>
+    </main>
+<!-- Map Functionality from View page -->
+<input type="hidden" name="charge_extent" id="charge_extent" value="{{ geometry }}">
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_layer_styles.js') }}"></script>
+    <script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_charge.js') }}"></script>
+{% endblock %}
+

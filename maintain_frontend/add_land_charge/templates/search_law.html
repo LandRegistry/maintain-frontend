@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Confirm the law{% endblock %}
+
+{% block head %}
+    <link rel=stylesheet media="screen" type=text/css
+          href="{{ config.STATIC_CONTENT_URL }}/stylesheets//vendor/jqueryui/1.12.1/autocomplete.css">
+  <noscript>
+    <link rel="stylesheet"
+          href="{{ config.STATIC_CONTENT_URL }}/stylesheets/maintain-frontend-custom-ie8.css"
+          type="text/css">
+  </noscript>
+  <!--[if IE 8]>
+        <link rel="stylesheet"
+              href="{{ config.STATIC_CONTENT_URL }}/stylesheets/maintain-frontend-custom-ie8.css"
+              type="text/css">
+    <![endif]-->
+{% endblock %}
+
+{% block body %}
+  <main id="content">
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+      {% include 'partials/validation_partial.html' %}
+        <h1 class="heading-large">Confirm the law</h1>
+        <form action="{{ url_for('add_land_charge.post_search_law') }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div class="form-group {% if validation_errors and validation_errors['legislation'] %}form-group-error{% endif %}">
+            <fieldset>
+              <legend class="visuallyhidden">Confirm the law</legend>
+              {% if validation_errors and validation_errors['legislation'] %}
+                  <span id="search-law-error" class="error-message">{{ validation_errors['legislation'].inline_message}}</span>
+              {% endif %}
+              <label class="form-label" for="legislation">
+                Enter the law, for example 'Town and Country Planning Act 1990 section 106'
+              </label>
+              <input class="form-control search-field js-enabled" id="legislation" name="legislation" type="text"  value="{% if current_provision %}{{ current_provision }}{% endif %}" autofocus="autofocus" style="width: 100%;">
+              <select id="legislation-nojs" name="legislation-nojs" class="form-control search-select-list" size="10" style="width: 100%; display: none">
+                {% for provision in provisions|sort %}
+                  <option value="{{ provision }}" {% if current_provision and current_provision==provision %} selected="selected"{% endif %}>{{ provision }}</option>
+                {% endfor %}
+              </select>
+            </fieldset>
+          </div>
+          <p>{% include 'partials/submit_form_partial.html' %}</p>
+          <p><a href="{{ url_for('add_land_charge.new') }}">Choose a different charge category</a></p>
+        </form>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ config.STATIC_CONTENT_URL }}/js/vendor/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="{{ url_for('add_land_charge.static', filename='js/statutory_provisions.js') }}"></script>
+
+  <!--[if gt IE 8]><!-->
+  <script>
+      $(document).ready(function() {
+          statutory_provisions.init({{ provisions|tojson }});
+          statutory_provisions.script_enabled();
+      });
+  </script>
+  <!--<![endif]-->
+{% endblock %}
+
+

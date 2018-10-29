@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Change the legislation{% endblock %}
+
+{% block page_title %}
+    Select a charge type
+{% endblock %}
+
+{% block head %}
+    <link rel=stylesheet media="screen" type=text/css
+          href="{{ config.STATIC_CONTENT_URL }}/stylesheets//vendor/jqueryui/1.12.1/autocomplete.css">
+{% endblock %}
+
+{% block body %}
+<main id="content">
+    {% include 'partials/phase_banner_beta.html' %}
+    {% include 'partials/validation_partial.html' %}
+    <p><a href="{{ url_for('modify_land_charge.modify_land_charge', local_land_charge=local_land_charge) }}">Back to charge details</a></p>
+
+    <h1 class="heading-large">Change the legislation</h1>
+    <div class="search-by-autocomplete">
+        <form id="statutory-provision-form" action="{{ url_for('modify_land_charge.post_provisions') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="form-group">
+                <fieldset>
+                    <legend class="visuallyhidden">What is the legal basis for this charge?</legend>
+                  <div class="form-group spacing-bottom-half {% if validation_errors and validation_errors['legislation'] %} form-group-error {% endif %}">
+
+                      <p>The legislation for this charge is {{ g.session.add_charge_state.statutory_provision }}</p>
+                      <br>
+                      <h2 class="heading-small"><label for="legislation">New Legislation</label></h2>
+
+                      <span class="form-hint"><p>Start typing the law, act or section you’re looking for.</p></span>
+
+                        {% if validation_errors and validation_errors['legislation'].inline_message %}
+                            <span class="error-message">{{ validation_errors['legislation'].inline_message }}</span>
+                        {% endif %}
+
+                        <input class="form-control search-field js-enabled" id="legislation" name="legislation" type="text" value="{% if current_provision %}{{ current_provision }}{% endif %}" autofocus="autofocus">
+
+                      <select id="legislation-nojs" name="legislation-nojs" class="form-control search-select-list" size="10" style="width: 66%; display: none">
+                            <option value="No specific statutory provision" {% if current_provision and current_provision=='No specific statutory provision' %} selected="selected"{% endif %}>No specific statutory provision</option>
+                            {% for provision in provisions|sort %}
+                                <option value="{{ provision }}" {% if current_provision and current_provision==provision %} selected="selected"{% endif %}>{{ provision }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                </fieldset>
+            </div>
+            <br>
+            {% include 'partials/submit_form_partial.html' %}
+        </form>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ config.STATIC_CONTENT_URL }}/js/vendor/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="{{ url_for('add_land_charge.static', filename='js/statutory_provisions.js') }}"></script>
+  <!--[if gt IE 8]><!-->
+  <script>
+  $(document).ready(function() {
+      statutory_provisions.init({{ provisions|tojson }}, '{{ default_statutory_provision }}');
+      statutory_provisions.script_enabled();
+  });
+  </script>
+  <!--<![endif]-->
+{% endblock %}

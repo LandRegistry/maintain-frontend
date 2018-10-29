@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}Add new source information{% endblock %}
+
+{% block body %}
+
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+            <h1 class="heading-large">Add new source information</h1>
+            <p>This can be a department name and address or a link to a place where
+                charge documents are kept online, for example a planning portal.</p>
+            <form action="{{ url_for('source_info.post_add_source_information') }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="form-group {% if validation_errors and validation_errors['source-information'] %} form-group-error {% endif %}">
+                    {% if validation_errors %}
+                        <span class="error-message">{{ validation_errors['source-information'].inline_message }}</span>
+                    {% endif %}
+
+                    <textarea class="form-control form-control-3-4" name="source-information" id="source-information" rows="5">{% if source_information %}{{ source_information }}{% endif %}</textarea>
+                    <label class="form-label visually-hidden" for="source-information">Provide the source information</label>
+                    <p><span class="form-hint">Answer must be shorter than 500 characters (about 85 words)</span></p>
+                </div>
+                <div class="form-group">
+                    <input id="submit" type="submit" value="Add" class="button"/>
+                </div>
+                <div class="form-group">
+                    <p>or <a href="{{ url_for('source_info.get_source_information') }}">cancel</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

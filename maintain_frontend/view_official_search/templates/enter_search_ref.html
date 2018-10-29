@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Enter the search reference{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div id="page-errors">
+                    {% include 'partials/validation_partial.html' %}
+                </div>
+                <h1 class="heading-large">Enter the search reference</h1>
+                <br>
+                <form action="{{ submit_url }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="form-group {% if validation_errors and validation_errors['search_reference'] %} form-group-error {% endif %}">
+                        <label class="form-label visually-hidden" for="search_reference">Search reference</label>
+                        <span class="form-hint">For example, 000 002 969</span>
+                        <br>
+
+                        {% if validation_errors and validation_errors['search_reference'] %}
+                            <span class="error-message">{{ validation_errors['search_reference'].inline_message }}</span>
+                        {% endif %}
+
+                        <input class="form-control" id="search_reference" type="text" name="search_reference"
+                            {% if request_body %}
+                                value="{{ request_body.search_reference }}"
+                            {% endif %}>
+                    </div>
+                    <input id="submit" type="submit" value="Continue" class="button">
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,267 @@
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="charge-id-header">HM Land Registry reference</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="charge-id-data">{{ charge_id }}</p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="registration-date-header">Registered on</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="registration-date-data">{{ charge_item.registration_date.strftime('%d %B %Y').lstrip("0") }}</p>
+    </div>
+</div>
+
+{% if updated %}
+<div class="grid-row">
+    <div class="column-third">
+        <h2 class="margin-top-small" id="update-date-header">Updated on</h2>
+    </div>
+    <div class="column-two-thirds">
+        <p class="bold-small" id="update-date-data">{{ updated_date }}</p>
+    </div>
+</div>
+{% endif %}
+
+
+<div class="grid-row">
+    <div class="column-full">
+        <hr>
+    </div>
+</div>
+
+<!-- Applicant Info -->
+<div class="grid-row" id="applicant-info">
+    <div class="column-full">
+        <h2 class="heading-medium">Person applying for this LON</h2>
+    </div>
+</div>
+
+<div id="applicant-name" class="grid-row {% if "applicant-name" in g.session.edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="applicant-name-header">Name</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="applicant-name-data">
+            {% if charge_item.applicant_name %}
+                {{ charge_item.applicant_name }}
+            {% else %}
+                Not provided
+            {% endif %}
+            </p>
+    </div>
+
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_lon.edit_applicant_info_get') }}" title="Update applicant name" id="applicant-name-update">Update name</a></p>
+    </div>
+</div>
+
+<div id="applicant-address" class="grid-row {% if "applicant-address" in g.session.edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="applicant-address-header">Address</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="applicant-address-data">
+            {% if charge_item.applicant_address['line-1'] %}
+                {{ charge_item.applicant_address['line-1'] }}
+                {% if charge_item.applicant_address['line-2'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-2'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-3'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-3'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-4'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-4'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-5'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-5'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['line-6'] %}
+                    <br>
+                    {{ charge_item.applicant_address['line-6'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['postcode'] %}
+                    <br>
+                    {{ charge_item.applicant_address['postcode'] }}
+                {% endif %}
+                {% if charge_item.applicant_address['country'] %}
+                    <br>
+                    {{ charge_item.applicant_address['country'] }}
+                {% endif %}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_lon.edit_applicant_info_get') }}" title="Update applicant address" id="applicant-address-update">Update address</a></p>
+    </div>
+</div>
+
+<!-- Dominant Building -->
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">Dominant building (building losing access to light)</h2>
+    </div>
+</div>
+
+<div id="{% if charge_item.charge_address %}charge-address{% else %}charge_geographic_description{% endif %}"
+     class="grid-row
+     {% if "charge-address" in g.session.edited_fields or "charge_geographic_description" in g.session.edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="charge-address-header">Address</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="charge-address-data">
+            {% if charge_item.charge_address %}
+                {{ charge_item.charge_address['line-1'] }}
+                {% if charge_item.charge_address['line-2'] %}<br/>{{ charge_item.charge_address['line-2'] }}{% endif %}
+                {% if charge_item.charge_address['line-3'] %}<br/>{{ charge_item.charge_address['line-3'] }}{% endif %}
+                {% if charge_item.charge_address['line-4'] %}<br/>{{ charge_item.charge_address['line-4'] }}{% endif %}
+                {% if charge_item.charge_address['line-5'] %}<br/>{{ charge_item.charge_address['line-5'] }}{% endif %}
+                {% if charge_item.charge_address['line-6'] %}<br/>{{ charge_item.charge_address['line-6'] }}{% endif %}
+                <br/>{{ charge_item.charge_address['postcode'] }}
+            {% elif charge_item.charge_geographic_description %}
+                {{ charge_item.charge_geographic_description }}
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_lon.edit_dominant_building_get') }}" title="Update dominant building address" id="charge-geographic-description-update">Update dominant address</a></p>
+    </div>
+</div>
+
+<div id="geometry" class="grid-row {% if "geometry" in g.session.edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="geometry-header">Extent</h3>
+    </div>
+    <div class="column-third">
+        <div id="map-view-charge" aria-label="Image showing charge extent" role="img">
+            {% include "map.html" %}
+        </div>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_lon.edit_dominant_building_extent_get') }}" title="Update dominant building extent" id="geometry-update">Update extent</a></p>
+    </div>
+</div>
+
+<!-- Servient Land Development -->
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">Servient land development (development that will block the light)</h2>
+    </div>
+</div>
+
+<div id="structure-dimension" class="grid-row {% if "structure-dimension" in g.session.edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="structure-dimension-header">Height</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="structure-dimension-data">
+            {% if charge_item.structure_position_and_dimension['height'] %}
+                {{ charge_item.structure_position_and_dimension['height'] }}
+                {% if charge_item.structure_position_and_dimension['units'] %}
+                    {{ charge_item.structure_position_and_dimension['units'] }}
+                {% endif %}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_lon.edit_servient_structure_height_get') }}" title="Update dimension" id="structure-dimension-update">Update height - planned development</a></p>
+    </div>
+</div>
+
+<div id="structure-position" class="grid-row {% if "structure-position" in g.session.edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="structure-position-header">Covers all or part of extent</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="structure-position-data">
+            {% if charge_item.structure_position_and_dimension['extent-covered'] != 'All of the extent' %}
+                {% if charge_item.structure_position_and_dimension['part-explanatory-text'] %}
+                    {{ charge_item.structure_position_and_dimension['part-explanatory-text'] }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            {% else %}
+                {{ charge_item.structure_position_and_dimension['extent-covered'] }}
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_lon.edit_servient_structure_position_get') }}" title="Update position" id="structure-position-update">Update extent - planned development</a></p>
+    </div>
+</div>
+
+<div id="servient-land-interest-description" class="grid-row {% if "servient-land-interest-description" in g.session.edited_fields %} highlight_row {% endif %}">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="servient-land-interest-description-header">Interest in land</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="servient-land-interest-description-data">
+            {% if charge_item.servient_land_interest_description %}
+                {{ charge_item.servient_land_interest_description }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <p class="margin-top-small"><a href="{{ url_for('modify_lon.edit_lon_land_interest_get') }}" id="servient-land-interest-description-update">Update interest</a></p>
+    </div>
+</div>
+
+<!-- Definitive Certificate -->
+{% if "definitive-certificate" in g.session.edited_fields %}
+<div class="grid-row highlight_row" id="definitive-certificate">
+    <div class="column-full">
+        <h2 class="heading-medium">Definitive Certificate</h2>
+    </div>
+</div>
+
+<div class="grid-row highlight_row" id="tribunal-definitive-certificate-date">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="tribunal-definitive-certificate-date-header">Tribunal definitive certificate date</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="tribunal-definitive-certificate-date-data">
+            {{ charge_item.tribunal_definitive_certificate_date.strftime('%d %B %Y').lstrip("0") }}
+        </p>
+    </div>
+</div>
+
+<div class="grid-row highlight_row" id="expiry-date">
+    <div class="column-third">
+        <h3 class="margin-top-small" id="expiry-date-header">Expiry date</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="expiry-date-data">
+            {{ charge_item.expiry_date.strftime('%d %B %Y').lstrip("0") }}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{% if g.session.edited_fields %}
+<br />
+<br />
+
+<form action="{{ url_for('modify_lon.modify_land_charge_confirm', charge_id=charge_id) }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input id="submit" type="submit" value="Save changes" class="button">
+</form>
+
+<br/>
+<p><a href="{{ url_for('modify_lon.clear_lon_changes', charge_id=charge_id) }}" id="cancel-changes">Cancel changes</a></p>
+
+{% endif %}

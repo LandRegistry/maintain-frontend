@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% if parent.lower() == 'other' %}
+  {%  set page_title = "Choose another charge category" %}
+{% else %}
+  {%  set page_title = "Choose a " + parent + " category" %}
+{% endif %}
+{% block title %}{{ page_title }}{% endblock %}
+
+
+{% block body %}
+  <main id="content">
+    <div class="grid-row">
+      <div class="column-full">
+        {% include 'partials/phase_banner_beta.html' %}
+      </div>
+    </div>
+
+    <div class="grid-row">
+      <div class="column-two-thirds">
+      {% include 'partials/validation_partial.html' %}
+        <h1 class="heading-large">{{ page_title }}</h1>
+        <form action="{{ url_for('add_land_charge.post_sub_category') }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <fieldset>
+            <legend class="visually-hidden">What is the housing category of the charge?</legend>
+            {% if validation_errors and validation_errors['charge-sub-category'] %}
+              <div id="charge-sub-category-error" class="form-group-error" style="height: 2em">
+                <span class="error-message">{{ validation_errors['charge-sub-category'].inline_message }}</span>
+              </div>
+            {% endif %}
+
+            <div id="charge-sub-category" class="form-group {% if validation_errors and validation_errors['charge-sub-category'] %}form-group-error{% endif %}">
+              {% for category in categories %}
+                <div class="multiple-choice">
+                  <input id="{{ category.name.replace(" ", "-").lower() }}" name="charge-sub-category" type="radio" value="{{ category.name }}">
+                  <label id="{{ category.name.replace(" ", "-").lower() }}-label" class="block-label selection-button-radio" for="{{ category.name.replace(" ", "-").lower() }}">
+                    {{ category.display_name }}
+                  </label>
+                </div>
+              {% endfor %}
+              <div class="multiple-choice">
+                <input id="unknown" name="charge-sub-category" type="radio" value="I don't know the charge category">
+                <label id="unknown-label" class="block-label selection-button-radio" for="unknown">
+                  I don't know the charge category
+                </label>
+              </div>
+            </div>
+          </fieldset>
+          {% include 'partials/submit_form_partial.html' %}
+        </form>
+      </div>
+    </div>
+  </main>
+
+{% endblock %}

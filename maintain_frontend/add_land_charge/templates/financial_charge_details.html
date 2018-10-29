@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block title %}Amount and interest for this charge{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+
+        <h1 class="heading-large">Amount and interest for this charge</h1>
+
+        <form action="{{ submit_url }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <fieldset>
+            <legend class="visually-hidden">Amount and interest for this charge</legend>
+              <div class="form-group {% if validation_errors and validation_errors['amount-secured'] %} form-group-error {% endif %}">
+
+                  <label class="form-label bold-small" for="amount-secured"><span class="bold-small">Amount originally secured</span>
+                      <span class="form-hint"> For example, 100.50</span>
+                  </label>
+
+                  {% if validation_errors and validation_errors['amount-secured'] %}
+                  <span class="error-message"
+                        id="error-message-amount-secured">{{ validation_errors['amount-secured'].inline_message }}</span>
+                  {% endif %}
+
+                  £
+                  <input id="amount-secured"
+                         class="form-control"
+                         name="amount-secured"
+                         type="text"
+                         {% if request_body['amount-secured'] %}
+                         value="{{ request_body['amount-secured'] }}"
+                         {% endif %}>
+                  <p class="form-hint" style="margin-left:0.75em; margin-top:0.26316em">
+                    <span>Answer must be shorter than 13 numbers</span>
+                  </p>
+              </div>
+            <span class="bold-small">Will interest be paid on the amount?</span>
+              {% if validation_errors and validation_errors['interest-paid-indicator'] %}
+              <div id="financial-charge-error" class="form-group-error" style="height: 2em">
+                  <span class="error-message">{{ validation_errors['interest-paid-indicator'].inline_message }}</span>
+              </div>
+              {% endif %}
+              <div id="interest-paid-indicator" class="form-group {% if validation_errors and validation_errors['interest-paid-indicator'] %}form-group-error{% endif %}">
+                <div class="multiple-choice" data-target="interest-rate-details">
+                  <input id="yes" name="interest-paid-indicator" type="radio" value="Yes"
+                         {% if request_body and request_body['interest-paid-indicator'] == "Yes" %} checked {% endif %}>
+                  <label id="yes-label" class="block-label selection-button-radio" for="yes">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-group js-hidden panel panel-border-narrow" id="interest-rate-details">
+                  <div class="form-group form-date {% if validation_errors and validation_errors['interest-rate'] %} form-group-error {% endif %}">
+
+                    <label class="form-label bold-small" for="interest-rate"><span class="bold-small">Rate of interest</span>
+                      <span class="form-hint"> For example, 2% above the bank's base rate</span>
+                    </label>
+
+                      {% if validation_errors and validation_errors['interest-rate'] %}
+                    <span class="error-message"
+                        id="error-message-interest-rate">{{ validation_errors['interest-rate'].inline_message }}</span>
+                      {% endif %}
+
+                      <input id="interest-rate"
+                             class="form-control"
+                             name="interest-rate"
+                             type="text"
+                             {% if request_body['interest-rate'] %}
+                             value="{{ request_body['interest-rate'] }}"
+                             {% endif %}>
+                      <p class="form-hint" style="margin-top:0.26316em">
+                        <span>Answer must be shorter than 70 characters (about 10 words)</span>
+                      </p>
+                  </div>
+                </div>
+
+                <div class="multiple-choice">
+                  <input id="no" name="interest-paid-indicator" type="radio" value="No"
+                         {% if request_body and request_body['interest-paid-indicator'] == "No" %} checked {% endif %}>
+                  <label id="no-label" class="block-label selection-button-radio" for="no">
+                    No
+                  </label>
+                </div>
+              </div>
+          </fieldset>
+
+          {% include 'partials/submit_form_partial.html' %}
+
+        </form>
+      </div>
+
+    </div>
+
+  </main>
+
+{% endblock %}

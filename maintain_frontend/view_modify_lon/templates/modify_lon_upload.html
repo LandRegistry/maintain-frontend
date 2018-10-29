@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+{% block title %}Upload a new document{% endblock %}
+
+{% block body %}
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+            <h1 class="heading-large">Upload a new document</h1>
+            <form action="{{ url_for('modify_lon.modify_lon_upload_post', charge_id=charge_id) }}" method="POST" enctype=multipart/form-data>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <div class="form-group {% if validation_errors and validation_errors['vary-lon-options'] %} form-group-error {% endif %}"
+                      id="vary-lon-options">
+                    <fieldset>
+                        <legend class="visuallyhidden">Upload a new document</legend>
+
+                        {% if validation_errors and validation_errors['vary-lon-options'] %}
+                                    <span class="error-message" style="height:2em">{{ validation_errors['vary-lon-options'].inline_message }}</span>
+                        {% endif %}
+
+                        {% if not charge_item.tribunal_definitive_certificate_date %}
+                        <div class="multiple-choice" data-target="definitive-certificate-extra-details">
+                            <input type="radio" name="vary-lon-options" value="Definitive Certificate" id="definitive-certificate"
+                                   {% if request_body and "Definitive Certificate" in request_body.getlist('vary-lon-options') %} checked {% endif %}>
+                            <label for="definitive-certificate" class="form-label-bold">
+                                Definitive Certificate
+                            </label>
+                        </div>
+
+                        <div class="panel panel-border-narrow js-hidden" id="definitive-certificate-extra-details">
+                            <div class="form-group {% if validation_errors and validation_errors['definitive-certificate-file-input'] %} form-group-error {% endif %}">
+                                <label class="form-label-bold visually-hidden" for="definitive-certificate-file-input">Definitive LON certificate</label>
+
+                                {% if validation_errors and validation_errors['definitive-certificate-file-input'] %}
+                                    <span class="error-message">{{ validation_errors['definitive-certificate-file-input'].inline_message }}</span>
+                                {% endif %}
+
+                                <input type="file" name="definitive-certificate-file-input" id="definitive-certificate-file-input">
+                            </div>
+
+
+                            <div class="form-group form-date {% if validation_errors and validation_errors['tribunal_definitive_certificate_date'] %} form-group-error {% endif %}"
+                                 id="tribunal_definitive_certificate_date">
+                                <div>
+                                    <h2 class="heading-small">Date of certificate</h2>
+                                </div>
+
+                                {% if validation_errors and validation_errors['tribunal_definitive_certificate_date'] %}
+                                    <span class="error-message">{{ validation_errors['tribunal_definitive_certificate_date'].inline_message }}</span>
+                                {% endif %}
+
+                                <div class="form-group form-group-day">
+                                    <label for="definitive_cert_day" class="form-label">Day</label>
+                                    <input id="definitive_cert_day"
+                                           name="definitive_cert_day"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.definitive_cert_day }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-month">
+                                    <label for="definitive_cert_month" class="form-label">Month</label>
+                                    <input id="definitive_cert_month"
+                                           name="definitive_cert_month"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.definitive_cert_month }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-year">
+                                    <label for="definitive_cert_year" class="form-label">Year</label>
+                                    <input id="definitive_cert_year"
+                                           class="form-control"
+                                           name="definitive_cert_year"
+                                           type="number"
+                                           {% if request_body %}
+                                           value="{{ request_body.definitive_cert_year }}"
+                                           {% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="multiple-choice" data-target="form-b-extra-details">
+                            <input type="radio" name="vary-lon-options" value="Form B" id="form-b"
+                                   {% if request_body and "Form B" in request_body.getlist('vary-lon-options') %} checked {% endif %}>
+                            <label for="form-b">
+                                <span class="heading-small">Form B</span>
+                                <br>
+                                This is an application to change or cancel a light obstruction notice
+                            </label>
+                        </div>
+
+                        <div class="panel panel-border-narrow js-hidden" id="form-b-extra-details">
+                            <div class="form-group {% if validation_errors and validation_errors['form-b-file-input'] %} form-group-error {% endif %}">
+
+                                {% if validation_errors and validation_errors['form-b-file-input'] %}
+                                    <span class="error-message">{{ validation_errors['form-b-file-input'].inline_message }}</span>
+                                {% endif %}
+                                <label class="visually-hidden" for="form-b-file-input">Form B</label>
+                                <input type="file" name="form-b-file-input" id="form-b-file-input">
+                            </div>
+                        </div>
+
+                        <div class ="multiple-choice" data-target="court-order-extra-details">
+                            <input type="radio" name="vary-lon-options" value="Court Order" id="court-order"
+                                   {% if request_body and "Court Order" in request_body.getlist('vary-lon-options') %} checked {% endif %}>
+                            <label for="court-order">
+                                <span class="heading-small">Court Order</span>
+                                <br>
+                                The order allows someone to change or cancel the registration of a light obstruction notice
+                            </label>
+                        </div>
+                        <div class="panel panel-border-narrow js-hidden" id="court-order-extra-details">
+                            <div class="form-group {% if validation_errors and validation_errors['court-order-file-input'] %} form-group-error {% endif %}">
+
+                                {% if validation_errors and validation_errors['court-order-file-input'] %}
+                                    <span class="error-message">{{ validation_errors['court-order-file-input'].inline_message }}</span>
+                                {% endif %}
+                                <label class="visually-hidden" for="court-order-file-input">Court Order</label>
+                                <input type="file" name="court-order-file-input" id="court-order-file-input">
+                            </div>
+                        </div>
+
+                        <div class="multiple-choice">
+                            <input type="radio" name="vary-lon-options" value="I don't want to upload a new document" id="vary-no-upload">
+                            <label for="vary-no-upload" class="form-label-bold">
+                                I don't want to upload a new document
+                            </label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div>
+                    <br>
+                    {% include 'partials/submit_form_partial.html' %}
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

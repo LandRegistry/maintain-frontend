@@ -1,0 +1,244 @@
+{% extends "layout.html" %}
+{% block title %}Upload documents for this light obstruction notice (LON){% endblock %}
+
+{% block body %}
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+            <h1 class="heading-large">Upload documents for this light obstruction notice (LON)</h1>
+            <form action="{{ url_for('add_lon.post_upload_lon_documents') }}" method="POST" enctype=multipart/form-data>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <h2 class="heading-small">Form A and colour plan</h2>
+                    <div class="form-group {% if validation_errors and validation_errors['form-a-file-input'] %} form-group-error {% endif %}">
+                        {% if validation_errors and validation_errors['form-a-file-input'] %}
+                        <span class="error-message">{{ validation_errors['form-a-file-input'].inline_message }}</span>
+                        {% endif %}
+                        <ul class="list list-bullet">
+                            <li>Form A is an application form for the LON</li>
+                            <li>Colour plan is a plan showing the land affected by the LON</li>
+                        </ul>
+                        <label class="form-label-bold visually-hidden" for="form-a-file-input">Form A</label>
+                        <input type="file" name="form-a-file-input" id="form-a-file-input">
+                        <div class="form-hint">
+                            <p>Supported format: PDF</p>
+                        </div>
+
+                    </div>
+
+                <h2 class="heading-medium">What certificate can you provide?</h2>
+
+                <div class="form-group {% if validation_errors and validation_errors['certificate'] %} form-group-error {% endif %}"
+                     id="certificate">
+                    <fieldset>
+                        <legend>
+                            <span class="visually-hidden">What certificate can you provide?</span>
+                        </legend>
+                            {% if validation_errors and validation_errors['certificate'] %}
+                                <span class="error-message">{{ validation_errors['certificate'].inline_message }}</span>
+                            {% endif %}
+                        <div class="multiple-choice" data-target="temporary-lon-extra-details">
+                            <input type="checkbox" name="certificate" value="Temporary LON certificate" id="temporary_lon_cert"
+                                   {% if request_body and "Temporary LON certificate" in request_body.getlist('certificate') %} checked {% endif %}>
+                            <label for="temporary_lon_cert">
+                                <span class="heading-small">Temporary LON certificate</span>
+                                <br>
+                                This is from the Upper Tribunal (Lands Chamber). It is made when the tribunal issues a temporary LON to the person who has applied for it.
+                            </label>
+                        </div>
+                        <div class="panel panel-border-narrow js-hidden" id="temporary-lon-extra-details">
+                            <div class="form-group {% if validation_errors and validation_errors['temporary-lon-cert-file-input'] %} form-group-error {% endif %}">
+                                <label class="form-label-bold visually-hidden" for="temporary-lon-cert-file-input">Temporary LON certificate</label>
+
+                                {% if validation_errors and validation_errors['temporary-lon-cert-file-input'] %}
+                                <span class="error-message">{{ validation_errors['temporary-lon-cert-file-input'].inline_message }}</span>
+                                {% endif %}
+
+                                <input type="file" name="temporary-lon-cert-file-input" id="temporary-lon-cert-file-input">
+                                <div class="form-hint" style="margin-top:0.26316em">
+                                    <p>Supported format: PDF</p>
+                                </div>
+
+                            </div>
+                            <div class="form-group form-date {% if validation_errors and validation_errors['tribunal_temporary_certificate_date'] %} form-group-error {% endif %}"
+                                 id="tribunal_temporary_certificate_date">
+                                <div>
+                                    <h3 class="heading-small">Date of certificate</h3>
+                                </div>
+                                <div class="form-hint">
+                                    <p>For example, 31 3 2017</p>
+                                </div>
+
+                                {% if validation_errors and validation_errors['tribunal_temporary_certificate_date'] %}
+                                <span class="error-message">{{ validation_errors['tribunal_temporary_certificate_date'].inline_message }}</span>
+                                {% endif %}
+
+                                <div class="form-group form-group-day">
+                                    <label for="temp_cert_day" class="form-label">Day</label>
+                                    <input id="temp_cert_day"
+                                           name="temp_cert_day"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.temp_cert_day }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-month">
+                                    <label for="temp_cert_month" class="form-label">Month</label>
+                                    <input id="temp_cert_month"
+                                           name="temp_cert_month"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.temp_cert_month }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-year">
+                                    <label for="temp_cert_year" class="form-label">Year</label>
+                                    <input id="temp_cert_year"
+                                           class="form-control"
+                                           name="temp_cert_year"
+                                           type="number"
+                                           {% if request_body %}
+                                           value="{{ request_body.temp_cert_year }}"
+                                           {% endif %}>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-date {% if validation_errors and validation_errors['tribunal_temporary_certificate_expiry_date'] %} form-group-error {% endif %}"
+                                 id="tribunal_temporary_certificate_expiry_date">
+                                <div>
+                                    <h3 class="heading-small">Date of Expiry</h3>
+                                </div>
+                                <div class="form-hint">
+                                    <p>This is usually a number of months after today's date. Today's date is the registration date</p>
+                                </div>
+
+                                {% if validation_errors and validation_errors['tribunal_temporary_certificate_expiry_date'] %}
+                                <span class="error-message">{{ validation_errors['tribunal_temporary_certificate_expiry_date'].inline_message }}</span>
+                                {% endif %}
+
+                                <div class="form-group form-group-day">
+                                    <label for="temp_expiry_day" class="form-label">Day</label>
+                                    <input id="temp_expiry_day"
+                                           name="temp_expiry_day"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.temp_expiry_day }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-month">
+                                    <label for="temp_expiry_month" class="form-label">Month</label>
+                                    <input id="temp_expiry_month"
+                                           name="temp_expiry_month"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.temp_expiry_month }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-year">
+                                    <label for="temp_expiry_year" class="form-label">Year</label>
+                                    <input id="temp_expiry_year"
+                                           class="form-control"
+                                           name="temp_expiry_year"
+                                           type="number"
+                                           {% if request_body %}
+                                           value="{{ request_body.temp_expiry_year }}"
+                                           {% endif %}>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="multiple-choice" data-target="definitive-lon-extra-details">
+                            <input type="checkbox" name="certificate" value="Definitive LON certificate" id="definitive_lon_cert"
+                                   {% if request_body and "Definitive LON certificate" in request_body.getlist('certificate') %} checked {% endif %}>
+                            <label for="definitive_lon_cert">
+                                <span class="heading-small">Definitive LON certificate</span>
+                                <br>
+                                This is from the Upper Tribunal (Lands Chamber). It is made when the tribunal issues a full LON to the person who has applied for it.
+                            </label>
+                        </div>
+                        <div class="panel panel-border-narrow js-hidden" id="definitive-lon-extra-details">
+                            <div class="form-group {% if validation_errors and validation_errors['definitive-lon-cert-file-input'] %} form-group-error {% endif %}">
+                                <label class="form-label-bold visually-hidden" for="definitive-lon-cert-file-input">Definitive LON certificate</label>
+
+                                {% if validation_errors and validation_errors['definitive-lon-cert-file-input'] %}
+                                <span class="error-message">{{ validation_errors['definitive-lon-cert-file-input'].inline_message }}</span>
+                                {% endif %}
+
+                                <input type="file" name="definitive-lon-cert-file-input" id="definitive-lon-cert-file-input">
+                                <div class="form-hint" style="margin-top:0.26316em">
+                                    <p>Supported format: PDF</p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group form-date {% if validation_errors and validation_errors['tribunal_definitive_certificate_date'] %} form-group-error {% endif %}"
+                                 id="tribunal_definitive_certificate_date">
+                                <div>
+                                    <h3 class="heading-small">Date of certificate</h3>
+                                </div>
+                                <div class="form-hint">
+                                    <p>For example, 31 3 2017</p>
+                                </div>
+
+                                {% if validation_errors and validation_errors['tribunal_definitive_certificate_date'] %}
+                                <span class="error-message">{{ validation_errors['tribunal_definitive_certificate_date'].inline_message }}</span>
+                                {% endif %}
+
+                                <div class="form-group form-group-day">
+                                    <label for="definitive_cert_day" class="form-label">Day</label>
+                                    <input id="definitive_cert_day"
+                                           name="definitive_cert_day"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.definitive_cert_day }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-month">
+                                    <label for="definitive_cert_month" class="form-label">Month</label>
+                                    <input id="definitive_cert_month"
+                                           name="definitive_cert_month"
+                                           type="number"
+                                           class="form-control"
+                                           {% if request_body %}
+                                           value="{{ request_body.definitive_cert_month }}"
+                                           {% endif %}>
+                                </div>
+
+                                <div class="form-group form-group-year">
+                                    <label for="definitive_cert_year" class="form-label">Year</label>
+                                    <input id="definitive_cert_year"
+                                           class="form-control"
+                                           name="definitive_cert_year"
+                                           type="number"
+                                           {% if request_body %}
+                                           value="{{ request_body.definitive_cert_year }}"
+                                           {% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                {% include 'partials/submit_form_partial.html' %}
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

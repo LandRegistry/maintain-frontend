@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Payment link sent{% endblock %}
+
+{% block body %}
+    <main id="content" role="main">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div class="govuk-box-highlight">
+                    <h1 class="bold-large"><span class="charge_type"></span>Payment link sent</h1>
+                </div>
+                <p><a href="{{ url_for('send_payment_link.send_payment_link') }}" id="send-payment-link-link">Send another payment link</a></p>
+                <p><a id="return-home-link" href="{{ url_for('home.get') }}">Return to main menu</a></p>
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Who is the applicant?{% endblock %}
+
+{% block body %}
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+
+        <div id="page-errors">
+            {% include 'partials/validation_partial.html' %}
+        </div>
+
+            <h1 class="heading-large">Who is the applicant?</h1>
+
+            <form action="{{ submit_url }}" method="post" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <div class="form-group {% if validation_errors and validation_errors['applicant_name'] %} form-group-error {% endif %}">
+                    <label class="form-label-bold" for="applicant_name">Full name or company name</label>
+
+                    {% if validation_errors and validation_errors['applicant_name'] %}
+                        <span class="error-message">{{ validation_errors['applicant_name'].inline_message }}</span>
+                    {% endif %}
+
+                    <input class="form-control" id="applicant_name" type="text" name="applicant_name" maxlength="200"
+                           {% if request_body %}
+                           value="{{ request_body.applicant_name }}"
+                           {% endif %}>
+                    <p><span class="form-hint">Answer must be shorter than 200 characters (about 35 words)</span></p>
+                </div>
+
+                {% include 'address_fields_partial.html' %}
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('address_finder.static', filename='js/main.js') }}"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            address_finder.init();
+        });
+    </script>
+{% endblock %}

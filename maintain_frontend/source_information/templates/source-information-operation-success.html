@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}{{ success_message }}{% endblock %}
+
+{% block body %}
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <div class="govuk-box-highlight">
+                <h1 class="bold-large">{{ success_message }}</h1>
+            </div>
+            <p><a href="{{ url_for('source_info.get_source_information') }}">Return to manage source information</a></p>
+            <div>
+                <p>or <a id="return-home-link" href="{{ url_for('home.get') }}">return to main menu</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

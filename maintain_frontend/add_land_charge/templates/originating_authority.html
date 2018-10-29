@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Who are you adding the charge for?{% endblock %}
+
+{% block head %}
+    <link rel=stylesheet media="screen" type=text/css
+          href="{{ config.STATIC_CONTENT_URL }}/stylesheets//vendor/jqueryui/1.12.1/autocomplete.css">
+{% endblock %}
+
+{% block body %}
+
+<main id="content">
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+            <h1 class="heading-large">Who are you adding the charge for?</h1>
+
+            <form action="{{ submit_url }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <fieldset class="inline">
+                    <legend class="visually-hidden">Which authority are you adding this charge on behalf of?</legend>
+                    <div class="form-group {% if validation_errors and validation_errors['authority-search-field'] %} form-group-error {% endif %}">
+                        {% if validation_errors and validation_errors['authority-search-field'] %}
+                            <span id="error-message" class="error-message">{{ validation_errors['authority-search-field'].inline_message }}</span>
+                        {% endif %}
+                        <label class="form-label" for="authority-search-field">Enter an authority name to search</label>
+                        <input id="authority-search-field" name="authority-search-field" class="form-control search-field" type="text" value="" autocomplete="off" autofocus="autofocus">
+                    </div>
+                </fieldset>
+                {% include 'partials/submit_form_partial.html' %}
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <details>
+                <summary>
+                    <span class="summary">I can't find the authority</span>
+                </summary>
+
+                <div class="panel panel-border-narrow">
+                    <h2 class="heading-small">Not sure which authority you need?</h2>
+                    <p>
+                        <a href="https://data.gov.uk/dataset/local-authority-districts-counties-and-unitary-authorities-december-2015-map-in-great-britain2">See a map of authorities in the UK</a> (Office of National Statistics)
+                    </p>
+                    <p>If you still can't find the authority,
+                        <a id="contact-us-link" href="{{ config.CONTACT_US_URL }}" target="_blank"> contact HM Land Registry (email form).</a>
+                    </p>
+
+                </div>
+            </details>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ config.STATIC_CONTENT_URL }}/js/vendor/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{{ url_for('add_land_charge.static', filename='js/originating_authority.js') }}"></script>
+
+    <script type="text/javascript">
+      $(function() {
+          authoritySearch.init({{ authorities | tojson}});
+      });
+  </script>
+{% endblock %}

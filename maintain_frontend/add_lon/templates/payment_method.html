@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+{% block title %}Confirm payment method{% endblock %}
+
+{% block body %}
+
+<main id="content">
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <div id="page-errors">
+                {% include 'partials/validation_partial.html' %}
+            </div>
+
+            <h1 class="heading-large">Confirm payment method</h1>
+
+            <form action="{{ submit_url }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <fieldset>
+                    {% if validation_errors and validation_errors['payment_method'] %}
+                        <div id="payment_method_error" class="form-group-error" style="height: 2em">
+                            <span class="error-message">{{ validation_errors['payment_method'].inline_message }}</span>
+                        </div>
+                    {% endif %}
+                    <div id="payment_method_group" class="form-group {% if validation_errors and validation_errors['payment_method'] %} form-group-error {% endif %}">
+                        <legend class="visually-hidden">Payment method</legend>
+
+                        <div class="multiple-choice" data-target="govuk_payment_ref">
+                            <input id="govuk" name="payment_method" type="radio" value="govuk" aria-controls="govuk_payment_ref"
+                                   {% if request_body.payment_method and
+                                   request_body.payment_method=='govuk' %}checked='checked'{% endif %}>
+                            <label id="govuk_label" class="block-label selection-button-radio" for="govuk">GOV.UK Pay</label>
+                        </div>
+
+                        <div id="govuk_payment_ref" class="panel panel-border-narrow js-hidden {% if validation_errors and validation_errors['payment_ref'] %} form-group-error {% endif %}" aria-hidden="true">
+                            <div class="form-group">
+                                <h2>
+                                    Enter the payment reference number from GOV.UK Pay. You can find this in the list of
+                                    <a href="https://selfservice.payments.service.gov.uk/login" target="_blank">GOV.UK Pay transactions</a>
+                                    (link opens in new window). When the customer's payment appears on the list as
+                                    'success', you can add the light obstruction notice.
+                                </h2>
+                                <br>
+                                {% if validation_errors and validation_errors['payment_ref'] %}
+                                    <span class="error-message">{{ validation_errors['payment_ref'].inline_message }}</span>
+                                {% endif %}
+                                <label class="visually-hidden" for="payment_ref">Enter the payment reference number</label>
+                                <input class="form-control form-control-3-4" name="payment_ref" id="payment_ref" type="text"
+                                    {% if request_body.payment_ref %}
+                                       {{request_body.payment_ref}}
+                                    {% endif %}
+                                >
+                            </div>
+                        </div>
+
+                        <div class="multiple-choice">
+                            <input id="cheque" name="payment_method" type="radio" value="cheque"
+                                   {% if request_body.payment_method and
+                                   request_body.payment_method=='cheque' %}checked='checked'{% endif %}>
+                            <label id="cheque_label" class="block-label selection-button-radio" for="cheque">Cheque</label>
+                        </div>
+
+                        <div class="multiple-choice" data-target="no_payment_ref">
+                            <input id="none" name="payment_method" type="radio" value="none" aria-controls="no_payment_ref"
+                                   {% if request_body.payment_method and
+                                   request_body.payment_method=='none' %}checked='checked'{% endif %}>
+                            <label id="none_label" class="block-label selection-button-radio" for="none">No payment needed</label>
+                        </div>
+
+                        <div id="no_payment_ref" class="panel panel-border-narrow js-hidden {% if validation_errors and validation_errors['no_payment_notes'] %} form-group-error {% endif %}" aria-hidden="true">
+                            <div class="form-group">
+                                <h2>
+                                    Explain why payment is not needed for this light obstruction notice.
+                                </h2>
+                                <br>
+                                {% if validation_errors and validation_errors['no_payment_notes'] %}
+                                    <span class="error-message">{{ validation_errors['no_payment_notes'].inline_message }}</span>
+                                {% endif %}
+                                <label class="visually-hidden" for="no_payment_notes">Enter the payment reference number</label>
+                                <textarea class="form-control form-control-3-4" name="no_payment_notes" id="no_payment_notes" rows="5" maxlength="500">{% if request_body.no_payment_notes %}{{ request_body.no_payment_notes }}{% endif %}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </fieldset>
+
+                {% include 'partials/submit_form_partial.html' %}
+            </form>
+
+        </div>
+    </div>
+</main>
+
+{% endblock %}

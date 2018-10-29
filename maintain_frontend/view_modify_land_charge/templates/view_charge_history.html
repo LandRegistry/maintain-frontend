@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block title %}Charge history for {{charge_id}}{% endblock %}
+
+{% block head %}
+    <style>
+        .charge-history th,
+        .charge-history td {
+            vertical-align: top;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<main id="content">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+            <p><a id="back-to-charge-details-link-top" href="{{url_for('view_land_charge.view_land_charge', local_land_charge=charge_id)}}">Back to charge details</a></p>
+
+            <h1 class="heading-large">Charge history for {{charge_id}}</h1>
+
+            <p>You can see the most recent updates first.</p>
+
+            <table class="charge-history">
+                <thead>
+                <tr>
+                    <th class="bold-small">
+                        When
+                    </th>
+                    <th class="bold-small">
+                        Who
+                    </th>
+                    <th class="bold-small">
+                        What
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in history %}
+                        <tr>
+                            <td>
+                                {{format_date_bst(item.entry_timestamp, '%-d %B %Y')}} <br>
+                                {{format_date_bst(item.entry_timestamp, '%H:%M:%S')}}
+                            </td>
+                            {% if item.author is none %}
+                                <td>-</td>
+                            {% else %}
+                                <td>
+                                    {% if g.session.user.organisation ==  item.author["organisation"] or g.session.user.is_lr() %}
+                                        {{item.author["full-name"]}} <br>
+                                        {% if item.author["email"] %}
+                                           <a href="mailto:{{item.author['email']}}">{{item.author["email"]}}</a> <br>
+                                        {% endif %}
+                                    {% endif %}
+                                    {{item.author["organisation"]}}
+                                </td>
+                            {% endif %}
+                            {% if loop.last %}
+                                <td>Charge is added to the register</td>
+                            {% else %}
+                                <td>{{item | history_change_overview_format(charge_type=local_land_charge.charge_type) | safe}}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p class="margin-top-medium"><a id="back-to-charge-details-link-bottom" href="{{url_for('view_land_charge.view_land_charge', local_land_charge=charge_id)}}">Back to charge details</a></p>
+        </div>
+    </div>
+</main>
+{% endblock %}

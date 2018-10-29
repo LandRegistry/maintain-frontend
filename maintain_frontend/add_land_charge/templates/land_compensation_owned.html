@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block title %}How is the land owned?{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+
+        <h1 class="heading-large">How is the land owned?</h1>
+
+        <form action="{{ submit_url }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <fieldset>
+            <legend class="visually-hidden">How is the land owned?</legend>
+              {% if validation_errors and validation_errors['land-owned-indicator'] %}
+              <div id="financial-charge-error" class="form-group-error" style="height: 2em">
+                  <span class="error-message">{{ validation_errors['land-owned-indicator'].inline_message }}</span>
+              </div>
+              {% endif %}
+              <div id="land-owned-indicator" class="form-group {% if validation_errors and validation_errors['land-owned-indicator'] %}form-group-error{% endif %}">
+                <div class="multiple-choice">
+                  <input id="freehold" name="land-owned-indicator" type="radio" value="Freehold"
+                         {% if request_body and request_body['land-owned-indicator'] == "Freehold" %} checked {% endif %}>
+                  <label id="freehold-label" class="block-label selection-button-radio" for="freehold">
+                    Freehold
+                  </label>
+                </div>
+                <div class="multiple-choice">
+                  <input id="leasehold" name="land-owned-indicator" type="radio" value="Leasehold"
+                         {% if request_body and request_body['land-owned-indicator'] == "Leasehold" %} checked {% endif %}>
+                  <label id="leasehold-label" class="block-label selection-button-radio" for="leasehold">
+                    Leasehold
+                  </label>
+                </div>
+                <div class="multiple-choice" data-target="land-owned-other-details">
+                  <input id="other" name="land-owned-indicator" type="radio" value="Other"
+                         {% if request_body and request_body['land-owned-indicator'] == "Other" %} checked {% endif %}>
+                  <label id="other-label" class="block-label selection-button-radio" for="other">
+                    Other
+                  </label>
+                </div>
+                <div class="form-group js-hidden panel panel-border-narrow" id="land-owned-other-details">
+                  <div class="form-group form-date {% if validation_errors and validation_errors['land-owned-other'] %} form-group-error {% endif %}">
+
+                    <label class="form-label bold-small" for="land-owned-other">
+                        <span class="bold-small">Describe how the land is owned</span>
+                    </label>
+
+                      {% if validation_errors and validation_errors['land-owned-other'] %}
+                    <span class="error-message"
+                        id="error-message-land-owned-other">{{ validation_errors['land-owned-other'].inline_message }}</span>
+                      {% endif %}
+
+                      <textarea id="land-owned-other"
+                                class="form-control form-control-3-4"
+                                name="land-owned-other"
+                                rows="5">{% if request_body['land-owned-other'] %}{{ request_body['land-owned-other'] }}{% endif %}</textarea>
+                    <p><span class="form-hint">Answer must be shorter than 400 characters (about 60 words)</span></p>
+                  </div>
+                </div>
+              </div>
+          </fieldset>
+
+          {% include 'partials/submit_form_partial.html' %}
+
+        </form>
+      </div>
+
+    </div>
+
+  </main>
+
+{% endblock %}

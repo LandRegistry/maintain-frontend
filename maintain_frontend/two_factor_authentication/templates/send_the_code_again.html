@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block title %}Send the code again{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <h1 class="heading-large">Send the code again</h1>
+
+                        <p>
+                            Emails sometimes take a few minutes to arrive. If you did not get the email, send a new code.
+                        </p>
+
+                        <p>
+                            If you cannot access this email, <a href="{{ config.CONTACT_US_URL }}">contact HM Land Registry (email form)</a>
+                        </p>
+
+                        <br>
+
+                        <form action="{{ url_for('two_factor_authentication.post_send_the_code_again') }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <div class="form-group">
+                                <input id="submit" type="submit" value="Send new code" class="button"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

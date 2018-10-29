@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}You can't view this search{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h1 class="heading-large">You can't view this search</h1>
+                <br>
+                <div>
+                    {% if parent_lapsed %}
+                        <span class="bold-medium">This search is a repeat</span><br><br>
+                        <div class="panel panel-border-narrow">
+                            <span class="bold-medium">Original Search</span><br>
+                            <span>Search reference: {{ reference }}</span><br>
+                            <span>Search date: {{ search_date }}</span>
+                        </div>
+                        <p>The original search is older than 6 months and has expired. A repeat search can’t be viewed once the original search is expired.</p>
+                    {% else %}
+                        <p>This search was made on the <span class="bold-medium">{{ search_date }}</span> and is older than 6 months so has expired. A search can’t be viewed once it has expired</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <span>Contact the person who gave you this reference and explain:</span>
+                    <ul class="list list-bullet">
+                        <li>
+                            search results are not available after 6 months from the date of the original search
+                        </li>
+                        <li>
+                            if they want to view the charges affecting this area they will need to perform a new search
+                        </li>
+                        <li>
+                            if charges have been added or removed since this search a new search will contain the new up to date information
+                        </li>
+                    </ul>
+                </div>
+                <span><a href="{{ url_for('home.get') }}" id="return_home_link">Return to main menu</a></span><br>
+                <span>or <a href="{{ url_for('view_official_search.new') }}" id="search_again_link">view another official search</a></span>
+            </div>
+        </div>
+    </main>
+{% endblock %}

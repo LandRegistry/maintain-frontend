@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Enter customer's email{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div id="page-errors">
+                    {% include 'partials/validation_partial.html' %}
+                </div>
+                <h1 class="heading-large">Enter customer's email</h1>
+                <h2>This is the customer's email address (the one who wants to pay for a light obstruction notice).</h2>
+                <br>
+                <form action="{{ submit_url }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="form-group {% if validation_errors and validation_errors['email'] %} form-group-error {% endif %}">
+                        <label class="form-label" for="email">Email</label>
+
+                        {% if validation_errors and validation_errors['email'] %}
+                            <span class="error-message">{{ validation_errors['email'].inline_message }}</span>
+                        {% endif %}
+
+                        <input class="form-control" id="email" type="text" name="email"
+                            {% if request_body %}
+                                value="{{ request_body.email }}"
+                            {% endif %}>
+                    </div>
+                    <input id="submit" type="submit" value="Send link" class="button">
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

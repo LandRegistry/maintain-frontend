@@ -1,0 +1,16 @@
+Flask==0.12.4
+Flask-LogConfig==0.4.2
+Flask-Script==2.0.5
+Flask-WTF==0.14.2
+WTForms==2.1
+requests==2.20.0
+geopy==1.10.0
+psycopg2==2.6.2
+logconfig==0.4.0
+namedlist==1.7
+marshmallow==3.0.0b2
+python-dateutil==2.6.1
+pytz==2017.2
+shapely==1.6.2.post1
+PyJWT==1.5.3
+Fiona==1.7.11.post1

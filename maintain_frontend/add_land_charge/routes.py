@@ -1,0 +1,60 @@
+from flask import Blueprint
+
+import maintain_frontend.add_land_charge.add_land_charge
+import maintain_frontend.add_land_charge.additional_info
+import maintain_frontend.add_land_charge.charge_date
+import maintain_frontend.add_land_charge.charge_description
+import maintain_frontend.add_land_charge.charge_type
+import maintain_frontend.add_land_charge.sub_category
+import maintain_frontend.add_land_charge.confirm_law
+import maintain_frontend.add_land_charge.confirm_legal_document
+import maintain_frontend.add_land_charge.confirm_law_and_document
+import maintain_frontend.add_land_charge.originating_authority
+import maintain_frontend.add_land_charge.charge_subcategories.subcategory_not_known
+import maintain_frontend.add_land_charge.confirmation
+import maintain_frontend.add_land_charge.expiry
+import maintain_frontend.add_land_charge.address_for_charge
+import maintain_frontend.add_land_charge.address_confirmation
+import maintain_frontend.add_land_charge.location
+import maintain_frontend.add_land_charge.location_confirmation
+import maintain_frontend.add_land_charge.financial_charge
+import maintain_frontend.add_land_charge.financial_charge_details
+import maintain_frontend.add_land_charge.land_compensation_type
+import maintain_frontend.add_land_charge.land_compensation_payment
+import maintain_frontend.add_land_charge.land_compensation_owned
+import maintain_frontend.add_land_charge.land_compensation_land_sold
+import maintain_frontend.add_land_charge.review
+import maintain_frontend.add_land_charge.upload_shapefile
+
+# Blueprint Definition
+add_land_charge_bp = Blueprint('add_land_charge', __name__,
+                               static_url_path='/static/add-local-land-charge',
+                               static_folder='static',
+                               template_folder='templates')
+
+
+maintain_frontend.add_land_charge.add_land_charge.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.review.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.charge_type.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.sub_category.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.confirm_law.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.confirm_legal_document.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.confirm_law_and_document.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.originating_authority.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.charge_description.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.additional_info.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.address_for_charge.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.address_confirmation.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.confirmation.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.expiry.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.location.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.location_confirmation.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.charge_date.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.financial_charge.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.financial_charge_details.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.land_compensation_type.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.land_compensation_payment.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.land_compensation_owned.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.land_compensation_land_sold.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.charge_subcategories.subcategory_not_known.register_routes(add_land_charge_bp)
+maintain_frontend.add_land_charge.upload_shapefile.register_routes(add_land_charge_bp)

@@ -1,0 +1,28 @@
+{
+  "name": "maintain-frontend",
+  "version": "1.0.0",
+  "description": "This is the frontend repository for the Maintain LLC application. This application allows you to search for local land charges based upon a location.",
+  "main": "karma.conf.js",
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine-core": "^2.6.4",
+    "jasmine-jquery": "^2.1.1",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-jasmine-jquery": "^0.1.1",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-stacktrace": "^1.0.2",
+    "karma-spec-reporter": "0.0.31",
+    "standard": "^10.0.2"
+  },
+  "scripts": {
+    "test": "karma start --single-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LandRegistry/maintain-frontend.git"
+  },
+  "license": "ISC"
+}

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}Confirm delete{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h1 class="heading-large">Confirm delete</h1>
+                <div class="panel panel-border-wide">
+                    <p>If you delete this source, it will remove it from your list of sources.
+                       This means that when you add a new charge, the deleted source will no longer
+                       be available.</p>
+                </div>
+                <form action="{{ url_for('source_info.post_delete_source_information') }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                    <div class="form-group">
+                        <table id="source-info-confirm-table">
+                            <tbody>
+                            <tr>
+                                <th class="bold-small" scope="row">Source information</th>
+                                <td>{{ source_information }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <input id="submit" type="submit" value="Confirm and delete" class="button"/>
+                    </div>
+                    <div class="form-group">
+                        <p>or <a href="{{ url_for('source_info.get_source_information') }}">cancel</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

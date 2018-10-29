@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+{% block title %}Check your answers{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+
+    {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+          {% include 'partials/validation_partial.html' %}
+        <h1 class="heading-large">Check your answers</h1>
+
+        {# Display a list of links for each modified field. If any fields have been modified. #}
+        <div class="panel panel-border-wide" {% if edited_fields is not defined or not edited_fields %} style="display: none;" {% endif %}>
+          <p>You have made the following changes, which have been highlighted in the table below:</p>
+
+          <ul>
+            {% for field in edited_fields %}
+              <li><a id="{{ field }}_edited_field_link" href="#{{ field }}_row">{{ map[field].value }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <form action="{{ url_for('add_land_charge.post_review') }}" method="post">
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <table>
+
+            <tbody>
+
+            {% import 'partials/review_macro.html' as review_table %}
+
+            {% if g.session.adding_charge_for_other_authority %}
+              {{ review_table.add_editable_row('Originating Authority', 'originating_authority', 'add_land_charge.get_originating_authority_page', add_charge_state.format_field_for_display('originating_authority')) }}
+            {% endif %}
+            {{ review_table.add_read_only_row('Category', 'charge_type', add_charge_state.format_field_for_display('charge_type')) }}
+            {% if add_charge_state.charge_sub_category %}
+              {{ review_table.add_read_only_row(add_charge_state.charge_type + ' category', 'charge_sub_category', add_charge_state.format_field_for_display('charge_sub_category')) }}
+            {% endif %}
+            {{ review_table.add_read_only_row('Law', 'statutory_provision', add_charge_state.format_field_for_display('statutory_provision')) }}
+            {{ review_table.add_read_only_row('Legal document', 'instrument', add_charge_state.format_field_for_display('instrument')) }}
+            {% if add_charge_state.land_sold_description %}
+              {{ review_table.add_editable_row('Land sold', 'land_sold_description', 'add_land_charge.get_land_compensation_land_sold', add_charge_state.format_field_for_display('land_sold_description')) }}
+            {% endif %}
+            {% if add_charge_state.land_works_particulars %}
+              {{ review_table.add_editable_row('Work done', 'land_works_particulars', 'add_land_charge.get_land_compensation_land_sold', add_charge_state.format_field_for_display('land_works_particulars')) }}
+            {% endif %}
+            {% if add_charge_state.land_compensation_paid %}
+              {{ review_table.add_editable_row('Advance payment', 'land_compensation_paid', 'add_land_charge.get_land_compensation_payment', add_charge_state.format_field_for_display('land_compensation_paid'), prefix='£') }}
+              {{ review_table.add_editable_row('Total compensation', 'amount_of_compensation', 'add_land_charge.get_land_compensation_payment', add_charge_state.format_field_for_display('amount_of_compensation'), prefix='£') }}
+              {{ review_table.add_editable_row('Agreed or estimated', 'land_compensation_amount_type', 'add_land_charge.get_land_compensation_payment', add_charge_state.format_field_for_display('land_compensation_amount_type')) }}
+              {{ review_table.add_editable_row('Interest in land', 'land_capacity_description', 'add_land_charge.get_land_compensation_owned', add_charge_state.format_field_for_display('land_capacity_description')) }}
+            {% endif %}
+            {% if add_charge_state.amount_originally_secured %}
+              {{ review_table.add_editable_row('Amount', 'amount_originally_secured', 'add_land_charge.get_financial_charge_details', add_charge_state.format_field_for_display('amount_originally_secured'), prefix='£') }}
+              {% if add_charge_state.rate_of_interest|float('NaN') is number %} {% set suffix = '%' %} {% else %} {% set suffix = '' %} {% endif %}
+              {{ review_table.add_editable_row('Interest rate', 'rate_of_interest', 'add_land_charge.get_financial_charge_details', add_charge_state.format_field_for_display('rate_of_interest'), suffix=suffix) }}
+            {% endif %}
+            {{ review_table.add_editable_row('Creation date', 'charge_creation_date', 'add_land_charge.get_charge_date', add_charge_state.format_date_for_display('charge_creation_date')) }}
+            {{ review_table.add_map_row('Extent', 'geometry', 'add_land_charge.get_location') }}
+            {% if add_charge_state.charge_geographic_description %}
+              {{ review_table.add_editable_row('Location', 'charge_geographic_description', 'add_land_charge.get_address_for_charge', add_charge_state.format_field_for_display('charge_geographic_description')) }}
+            {% endif %}
+            {% if add_charge_state.charge_address %}
+              {{ review_table.add_editable_row('Location', 'charge_address', 'add_land_charge.get_address_for_charge', add_charge_state.format_field_for_display('charge_address'), true) }}
+            {% endif %}
+            {{ review_table.add_editable_row('Expiry date', 'expiry_date', 'add_land_charge.get_expiry', add_charge_state.format_date_for_display('expiry_date')) }}
+            {{ review_table.add_editable_row('Source information', 'further_information_location', 'add_land_charge.get_additional_info', add_charge_state.format_field_for_display('further_information_location')) }}
+            {{ review_table.add_editable_row('Authority reference', 'further_information_reference', 'add_land_charge.get_additional_info', add_charge_state.format_field_for_display('further_information_reference')) }}
+            {{ review_table.add_editable_row('Description', 'supplementary_information', 'add_land_charge.get_charge_description', add_charge_state.format_field_for_display('supplementary_information')) }}
+            </tbody>
+
+          </table>
+
+          <h2 class="heading-medium">Now add your local land charge</h2>
+
+          <p>By adding this charge, you are confirming that this information is correct.</p>
+
+            <p><input id="submit" type="submit" value="Add charge" class="button"></p>
+
+            <p>or <a href="{{ url_for('home.get') }}">cancel and return to main menu</a></p>
+        </form>
+
+      </div>
+    </div>
+
+  </main>
+
+  {# JavaScript to display the extent. #}
+  <input type="hidden" name="charge_extent" id="charge_extent" value="{{ geometry }}">
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_layer_styles.js') }}"></script>
+    <script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_charge.js') }}"></script>
+{% endblock %}

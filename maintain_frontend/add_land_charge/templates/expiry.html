@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block title %}Does the charge expire?{% endblock %}
+
+{% block page_title %}
+  Date the charge expires
+{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+      {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {% include 'partials/validation_partial.html' %}
+
+        <h1 class="heading-large" id="does_charge_expire">Does the charge expire?</h1>
+        <form action="{{ submit_url }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <fieldset>
+
+            <legend class="visually-hidden">Does the charge expire?</legend>
+
+            <div class="form-group">
+
+              <div class="form-group {% if validation_errors and validation_errors['does_charge_expire'] %} form-group-error {% endif %}">
+
+                {% if validation_errors and validation_errors['does_charge_expire'] %}
+                  <span class="error-message" id="error-message-does_charge_expire">{{ validation_errors['does_charge_expire'].inline_message }}</span>
+                {% endif %}
+
+                <div class ="multiple-choice" data-target="expires">
+                  <input id="expiresYes" name="does_charge_expire" type="radio" value="yes"
+                  {% if request_body and (request_body.does_charge_expire == "yes") %} checked {% endif %} >
+
+                  <label class="block-label selection-button-radio" for="expiresYes">Yes</label>
+                </div>
+
+                <div class="form-group js-hidden panel panel-border-narrow" id="expires">
+
+                  <div class="form-group form-date {% if validation_errors and validation_errors['charge_expiry_date'] %} form-group-error {% endif %}">
+
+                    {% if validation_errors and validation_errors['charge_expiry_date'] %}
+                      <span class="error-message"
+                            id="charge_expiry_date">{{ validation_errors['charge_expiry_date'].inline_message }}</span>
+                    {% endif %}
+
+                    <span class="form-hint">For example, 31 3 2017</span>
+
+                    <div class="form-group form-group-day">
+                      <label for="expiry_day" class="form-label">Day</label>
+                      <input id="expiry_day"
+                             name="charge_expiry_day"
+                             type="number"
+                             class="form-control"
+                        {% if request_body %}
+                             value="{{ request_body.charge_expiry_day }}"
+                        {% endif %}>
+                    </div>
+
+                    <div class="form-group form-group-month">
+                      <label for="expiry_month" class="form-label">Month</label>
+                      <input id="expiry_month"
+                             name="charge_expiry_month"
+                             type="number"
+                             class="form-control"
+                        {% if request_body %}
+                             value="{{ request_body.charge_expiry_month }}"
+                        {% endif %}>
+                    </div>
+
+                    <div class="form-group form-group-year">
+                      <label for="expiry_year" class="form-label">Year</label>
+                      <input id="expiry_year"
+                             class="form-control"
+                             name="charge_expiry_year"
+                             type="number"
+                        {% if request_body %}
+                             value="{{ request_body.charge_expiry_year }}"
+                        {% endif %}>
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class ="multiple-choice">
+                  <input id="expiresNo" name="does_charge_expire" type="radio" value="no"
+                  {% if request_body and (request_body.does_charge_expire == "no") %} checked {% endif %}>
+                  <label class="block-label selection-button-radio no" for="expiresNo"> No </label>
+                </div>
+              </div>
+
+            </div>
+
+          </fieldset>
+
+          {% include 'partials/submit_form_partial.html' %}
+
+        </form>
+
+      </div>
+    </div>
+  </main>
+
+{% endblock %}

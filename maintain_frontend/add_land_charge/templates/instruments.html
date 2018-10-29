@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Confirm legal document{% endblock %}
+
+{% block body %}
+  <main id="content">
+    <div class="grid-row">
+      <div class="column-full">
+        {% include 'partials/phase_banner_beta.html' %}
+      </div>
+    </div>
+    <div class="grid-row">
+      <div class="column-two-thirds">
+      {% include 'partials/validation_partial.html' %}
+        <h1 class="heading-large">Confirm legal document (optional)</h1>
+        <form action="{{ url_for('add_land_charge.post_all_legal_document') }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <fieldset>
+            <legend class="visually-hidden">Confirm legal document (optional)</legend>
+            {% if validation_errors and validation_errors['confirm-instruments'] %}
+              <div id="charge-sub-category-error" class="form-group-error" style="height: 2em">
+                <span class="error-message">{{ validation_errors['confirm-instruments'].inline_message }}</span>
+              </div>
+            {% endif %}
+            <div id="confirm-instruments-options" class="form-group {% if validation_errors and validation_errors['confirm-instruments'] %}form-group-error{% endif %}">
+              {% for instrument in instruments %}
+                <div class="multiple-choice">
+                  <input id="{{ instrument.replace(" ", "-").lower() }}" name="confirm-instrument" type="radio" value="{{ instrument }}">
+                  <label id="{{ instrument.replace(" ", "-").lower() }}-label" class="block-label selection-button-radio" for="{{ instrument.replace(" ", "-").lower() }}">
+                    {{ instrument }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <p>{% include 'partials/submit_form_partial.html' %}</p>
+          <p><a href="{{ url_for('add_land_charge.new') }}">Choose a different charge category</a></p>
+        </form>
+      </div>
+    </div>
+  </main>
+{% endblock %}

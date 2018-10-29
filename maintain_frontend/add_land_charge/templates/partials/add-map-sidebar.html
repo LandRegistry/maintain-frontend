@@ -1,0 +1,82 @@
+<div id="full-screen-map-sidebar" style="display: none" data-bind="visible: true">
+  {% include 'partials/ko_validation_partial.html' %}
+
+  <h1 class="heading-medium">Search by postcode, street name or town</h1>
+
+  <!-- Search input. -->
+  <fieldset id="search-fieldset" data-bind="css: { 'form-group-error': errorsForField('#search_term') }">
+    <legend class="visually-hidden">Search for the location to add a charge to</legend>
+    <!-- Search Error Inline Message -->
+    <!-- ko foreach: errorsForField('#search_term') -->
+    <span class="error-message" id="error-message-search" data-bind="text: message"></span>
+    <!-- /ko -->
+
+    <label for="search_term" class="visually-hidden">
+      Search by postcode, street name or town
+    </label>
+
+    <!-- ko foreach: errorsForField('#search_term') -->
+    <span class="error-message" id="inline-error-message-search" data-bind="text: inline"></span>
+    <!-- /ko -->
+
+    <div class="search-bar">
+      <input class="form-control search-field map__search_term" id="search_term" name="search_term" type="text"
+             autofocus="autofocus" data-bind="event: { keyup: flexSearchAddresses }">
+      <div class="search-bar-input map__search_button">
+        <button class="search-button" type="button" name="search" id="search" data-bind="click: flexSearchAddresses">
+          <span class="visually-hidden">Search</span>
+        </button>
+      </div>
+    </div>
+  </fieldset>
+
+  <p id="add-map-help-text">Use the buttons on this map to draw the charge extent.</p>
+
+  <!-- ko if: addresses().length -->
+  <div>
+    <h4 class="heading-small">Choose an address from the list</h4>
+
+    <ul id="address-list" class="list" data-bind="foreach: addresses">
+      <li><a href="#" data-bind="text: address, click: $parent.flexSelectAddress, attr: { id: 'address_item_' + $index() }"></a></li>
+    </ul>
+  </div>
+  <!-- /ko -->
+
+  {% if submit_url == url_for('add_land_charge.post_location') %}
+  <!-- Only show this section when adding a charge, not when varying -->
+  <form method="POST" action="{{ url_for('add_land_charge.post_save_existing_geometries') }}" onsubmit="populate_geometries('saved-features-upload')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input id="saved-features-upload" type="hidden" name="saved-features-upload" value="">
+    {% if request.args.get('upload') == "True" %}
+      <p><input id="upload-another-shapefile" type="submit" value="Upload another file" class="hyperlink-button"><br>
+        <a href="#" onclick="document.getElementById('map-button-remove-all').click()">Start again</a></p>
+    {% else %}
+      <p> Do you have an extent saved on file? <input id="upload-shapefile" type="submit" value="Upload the file" class="hyperlink-button"></p>
+    {% endif %}
+  </form>
+  {% endif %}
+
+  <!-- ko if: showSelectedAddress-->
+  <div id="selected-address-help-text">
+    <h4 class="heading-small">This is the map for <span data-bind="text: selectedAddress().address"></span></h4>
+  </div>
+  <!-- /ko -->
+
+  <div class ="panel panel-border-narrow" data-bind="css: { 'form-group-error': errorsForField('#map') }">
+
+    <!-- ko foreach: errorsForField('#map') -->
+    <span class="error-message" id="inline-error-message-map" data-bind="text: inline"></span>
+    <!-- /ko -->
+    
+    <p id="geometry-count">You have added <span class="bold" data-bind="text: extentCount"></span>  <span data-bind="text: extentTypesText"></span>
+      out of 500 possible extents.</p>
+  </div>
+
+  <form method="POST" action="{{ submit_url }}" onsubmit="populate_geometries('saved-features')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input id="saved-features" type="hidden" name="saved-features" value="">
+    <input id="selected-address" type="hidden" name="selected-address" data-bind="value: ko.toJSON(selectedAddress)">
+    <input id="continue" type="submit" value="Continue" class="button" disabled>
+  </form>
+
+</div>

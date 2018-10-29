@@ -1,0 +1,49 @@
+<div>
+    <h2 class="heading-medium">Enter a postcode</h2>
+
+    <!-- Search input. -->
+    <fieldset id="search-fieldset" data-bind="css: { 'form-group-error': errorsForField('#search_term') }">
+        <legend class="visually-hidden">Search for the location to add a charge to</legend>
+        <!-- Search Error Inline Message -->
+        <!-- ko foreach: errorsForField('#search_term') -->
+        <span class="error-message" id="inline-error-message-search" data-bind="text: inline"></span>
+        <!-- /ko -->
+
+        <label for="search_term" class="visually-hidden">
+            Search by postcode
+        </label>
+
+        <div class="search-bar">
+            <input class="form-control form-control-1-4 search-field" id="search_term" name="search_term" type="text"
+                   {% if postcode %}value="{{postcode}}"{% endif %} autofocus="autofocus"
+                   data-bind="event: { keypress: searchAddresses }">
+            <div class="search-bar-input">
+                <button class="search-button" type="button" name="search" id="search" data-bind="click: searchAddresses">
+                    <span class="visually-hidden">Search</span>
+                </button>
+            </div>
+        </div>
+    </fieldset>
+    </br>
+
+    <!-- ko if: selectedAddress -->
+    <p data-bind="text: selectedAddress().address"></p>
+    <!-- /ko -->
+
+    <!-- ko ifnot: selectedAddress -->
+    {% if charge_address %}
+        <p>{{ charge_address }}</p>
+    {% endif %}
+    <!-- /ko -->
+
+    <!-- ko if: addresses().length -->
+    <div style="display: inline-block">
+        <h4 class="heading-small">Choose an address from the list</h4>
+
+        <ul id="address-list" class="list" data-bind="foreach: addresses">
+            <li><a href="#" data-bind="text: address, click: $parent.selectAddress, attr: { id: 'address_item_' + $index() }"></a></li>
+        </ul>
+    </div>
+    <!-- /ko -->
+</div>
+

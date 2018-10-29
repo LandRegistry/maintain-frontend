@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block title %}Draw an extent for the dominant building{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+<main id="content" role="main">
+    {% include 'partials/phase_banner_beta.html' %}
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds" id="search-error"></div>
+        <div class="column-full">
+                <h1 class="heading-large">Draw an extent for the dominant building</h1>
+
+                <p>This is the building losing access to the light.</p>
+                <p>Use the buttons on the map to draw the extent.</p>
+            <div>
+                <fieldset id="search-fieldset">
+                    <!-- Search -->
+                    <legend class="visuallyhidden">Search for the location to add a charge to</legend>
+                    <span class="form-hint">You can also search again using a postcode or address.</span>
+                    <div class="form-group spacing-bottom-half" id="search-section">
+                        <label class="visually-hidden" for="search_term">Search Term</label>
+                        <input class="form-control map__search_term" id="search_term" name="search_term" type="text"
+                               value="{{ postcode if postcode != None }}" autofocus="autofocus">
+                        <input id="search" type="button" value="Search" class="button">
+                    </div>
+                </fieldset>
+
+            </div>
+
+            <div class="container">
+                <div id="map-nav" class="maintain-map form-group {% if validation_errors and validation_errors['map'] %} form-group-error {% endif %}">
+                    {% if validation_errors and validation_errors['map'] %}
+	                    {% for error in validation_errors['map'] %}
+	                    <span class="error-message" id="error-message-reference">{{ error.inline_message }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    {% include "map.html" %}
+                </div>
+            </div>
+
+            <form method="POST" action="{{ submit_url }}" onsubmit="populate_geometries('saved-features')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="saved-features" id="saved-features" value="">
+                <input type="submit" value="Continue" class="button">
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+
+    <!-- Custom Map Styles -->
+    <script src="{{ url_for('add_land_charge.static', filename='js/map_styles.js') }}"></script>
+    <!-- Submit geometries -->
+    <script src="{{ url_for('add_land_charge.static', filename='js/save_geometries.js') }}"></script>
+    <!-- Search Functionality -->
+    <script src="{{ url_for('add_lon.static', filename='js/dominant_building_extent.js') }}"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            addLonLocation.init();
+
+            if ($('#search_term').val()) {
+                $('#search')[0].click()
+            }
+        });
+    </script>
+
+    {% if information %}
+        <script type="text/javascript">
+            $(function(){
+                load_previous_data("{{information}}");
+            });
+        </script>
+    {% endif %}
+{% endblock %}

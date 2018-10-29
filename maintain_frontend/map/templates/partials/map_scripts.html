@@ -1,0 +1,41 @@
+<!-- Open Layers -->
+<script src="{{ config.STATIC_CONTENT_URL }}/js/vendor/openlayers/4.0.1/ol.min.js"></script>
+<script src="{{ config.STATIC_CONTENT_URL }}/js/vendor/proj4js/2.4.4/proj4.js"></script>
+
+<!-- Custom Map Styles -->
+<script src="{{ url_for('map.static', filename='js/map_styles.js') }}"></script>
+
+<!-- Master Map Vector Layer -->
+<script src="{{ url_for('map.static', filename='js/master_map_vector_layer.js') }}"></script>
+<script src="{{ url_for('map.static', filename='js/snap_to_vector_layer.js') }}"></script>
+
+<!-- Custom Map Controls -->
+<script src="{{ url_for('map.static', filename='js/map_undo.js') }}"></script>
+<script src="{{ url_for('map.static', filename='js/map_controls.js') }}"></script>
+<script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+
+<!-- Map config -->
+<script src="{{ url_for('map.static', filename='js/map_config.js') }}"></script>
+<script>
+    var termsLink = "{{ config.OS_TERMS_CONDITIONS_LINK | string() }}";
+    var mastermap_api_key = "{{ config.MASTERMAP_API_KEY | string() }}";
+    var map_base_layer_view_name = "{{ config.MAP_BASE_LAYER_VIEW_NAME | string() }}";
+    var wfs_server_url = "{{ config.WFS_SERVER_URL | string() }}";
+    var wmts_server_url = "{{ config.WMTS_SERVER_URL | string() }}";
+
+    MAP_CONFIG.setBaseLayer(MAP_CONFIG.base_layer_zindex, MAP_CONFIG.resolutions, MAP_CONFIG.projection, termsLink);
+</script>
+
+<!-- Layers -->
+<script src="{{ url_for('map.static', filename='js/geoserver.js') }}"></script>
+
+<script>
+    var is_lr = {{ 'true' if g.session.user.is_lr() else 'false' }};
+    var organisation = "{{ g.session.user.organisation | safe }}";
+    var geoserver_url = "{{ config.GEOSERVER_URL | string() }}";
+
+    configure_geoserver_layer_for_user(is_lr, organisation, geoserver_url, '{{ g.session.generate_geoserver() }}');
+</script>
+
+<!-- OpenLayers with Mapbox Map -->
+<script src="{{ url_for('map.static', filename='js/map.js') }}"></script>

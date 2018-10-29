@@ -1,0 +1,43 @@
+<div class="grid-row">
+    <div class="column-third">
+      <h3 class="margin-top-small" id="charge-id-header">HM Land Registry reference</h3>
+    </div>
+    <div class="column-two-thirds">
+      <p class="bold-small" id="charge-id-data">{{ charge_id }}</p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+            <h3 class="margin-top-small" id="charge-address-header">Dominant building</h3>
+    </div>
+    <div class="column-third">
+        <p class="bold-small" id="charge-address-data">
+            {% if charge_item.charge_address %}
+                {{ charge_item.charge_address['line-1'] }}
+                {% if charge_item.charge_address['line-2'] %}<br/>{{ charge_item.charge_address['line-2'] }}{% endif %}
+                {% if charge_item.charge_address['line-3'] %}<br/>{{ charge_item.charge_address['line-3'] }}{% endif %}
+                {% if charge_item.charge_address['line-4'] %}<br/>{{ charge_item.charge_address['line-4'] }}{% endif %}
+                {% if charge_item.charge_address['line-5'] %}<br/>{{ charge_item.charge_address['line-5'] }}{% endif %}
+                {% if charge_item.charge_address['line-6'] %}<br/>{{ charge_item.charge_address['line-6'] }}{% endif %}
+                <br/>{{ charge_item.charge_address['postcode'] }}
+            {% elif charge_item.charge_geographic_description %}
+                {{ charge_item.charge_geographic_description }}
+            {% endif %}
+        </p>
+    </div>
+    <div class="column-third">
+        <div id="map-view-charge" aria-label="Image showing charge extent" role="img">
+            {% include "map.html" %}
+        </div>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-third">
+      <h3 class="margin-top-small" id="registration-date-header">Registered on</h3>
+    </div>
+    <div class="column-two-thirds">
+      <p class="bold-small" id="registration-date-data">{{ charge_item.registration_date.strftime('%-d %B %Y') }}</p>
+    </div>
+</div>

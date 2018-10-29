@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block title %}What interest do they have in this land?{% endblock %}
+
+{% block body %}
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-full">
+            {% include 'partials/phase_banner_beta.html' %}
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% include 'partials/validation_partial.html' %}
+            <h1 class="heading-large">What interest do they have in this land?</h1>
+
+            <span class="form-hint"> This is the interest of the person or organisation applying for the light obstruction notice.
+                Tell us how they own or use the land. </span>
+
+            <br>
+
+            <form id="servient-land-interest-description" method="POST" action="{{ submit_url }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="form-group {% if validation_errors and validation_errors['servient-land-interest-description']
+                        %} form-group-error {% endif %}">
+                    {% if validation_errors and validation_errors['servient-land-interest-description'] %}
+                    <span class="error-message"
+                          id="error-message-reference">{{ validation_errors['servient-land-interest-description'].inline_message }}</span>
+                    {% endif %}
+                    <fieldset>
+
+                        <legend class="visually-hidden">What interest do they have in this land</legend>
+
+                        <div class="multiple-choice">
+                            <input id="owner" type="radio" name="servient-land-interest-description" value="Freehold owner"
+                                   {% if checked and checked == "Freehold owner" %} checked {% endif %}>
+                            <label for="owner">Freehold owner</label>
+                        </div>
+                        <div class="multiple-choice">
+                            <input id="tenant" type="radio" name="servient-land-interest-description" value="Tenant for a term of which over 7 years remain unexpired"
+                                   {% if checked and checked == "Tenant for a term of which over 7 years remain unexpired" %} checked {% endif %}>
+                            <label for="tenant">Tenant for a term of which over 7 years remain unexpired</label>
+                        </div>
+                        <div class="multiple-choice">
+                            <input id="lender" type="radio" name="servient-land-interest-description" value="Mortgagee in possession"
+                                   {% if checked and checked == "Mortgagee in possession" %} checked {% endif %}>
+                            <label for="lender">Mortgagee in possession</label>
+                        </div>
+
+                        <div class ="multiple-choice" data-target="servient-land-details">
+                            <input id="servient-land-other" name="servient-land-interest-description" type="radio" value="Other"
+                                   {% if checked and checked == "Other" %} checked {% endif %}>
+                            <label class="block-label selection-button-radio no" for="servient-land-other">Something else</label>
+                        </div>
+
+                        <div class="panel panel-border-narrow js-hidden" id="servient-land-details">
+                            <div class="form-group {% if validation_errors and validation_errors['servient-land-interest-description']%} form-group-error {% endif %}">
+                                <span class="form-hint">Describe the interest they have in this land.<br>For example, Freehold owner and Tenant for a term of which over 7 years remain unexpired.<br>Answer must be shorter than 500 characters (about 85 words).</span>
+                                {% if validation_errors and validation_errors['servient-land-interest-detail'] %}
+                                    <span class="error-message">{{ validation_errors['servient-land-interest-detail'].inline_message }}</span>
+                                {% endif %}
+                                <label class="form-label-bold visually-hidden" for="servient-land-detail">Other servient land interest</label>
+                                <textarea class="form-control form-control-3-4" name="servient-land-interest-detail" id="servient-land-detail" rows="5" maxlength="500">{% if request_body %}{{ request_body }}{% endif %}</textarea>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                {% include 'partials/submit_form_partial.html' %}
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

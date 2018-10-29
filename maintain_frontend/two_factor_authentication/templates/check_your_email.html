@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Check your email{% endblock %}
+
+{% block body %}
+    <main id="content">
+        <div class="grid-row">
+            <div class="column-full">
+                {% include 'partials/phase_banner_beta.html' %}
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        {% include 'partials/validation_partial.html' %}
+                        <h1 class="heading-large">Check your email</h1>
+
+                        <p>
+                            We've emailed a security code to the email you use to sign into this service.
+                        </p>
+
+                        <div class="panel panel-border-narrow">
+                            <span>If you enter the wrong code too many times,</span>
+                            <br>
+                            <span>you must sign in to your account again.</span>
+                        </div>
+
+                        <form action="{{ url_for('two_factor_authentication.post_check_your_email') }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <div class="form-group {% if validation_errors and validation_errors['code'] %} form-group-error {% endif %}">
+                                <fieldset>
+                                    {% if validation_errors %}
+                                        <span class="error-message">{{ validation_errors['code'].inline_message }}</span>
+                                    {% endif %}
+                                    <legend class="visuallyhidden">Security code</legend>
+
+                                    <label class="form-label" for="code">
+                                        Security code
+                                    </label>
+
+                                    <input id="code" name="code" type="text" class="form-control security-code {% if validation_errors and validation_errors['code'] %} form-control-error {% endif %}">
+                                </fieldset>
+                            </div>
+
+                            <div class="form-group">
+                                <input id="submit" type="submit" value="Continue" class="button"/>
+                            </div>
+                        </form>
+
+                        <a href="{{ url_for('two_factor_authentication.get_send_the_code_again') }}">Send a new code</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block title %}Check your answers{% endblock %}
+
+{% block head %}
+    {% include 'partials/map_styles.html' %}
+{% endblock %}
+
+{% block body %}
+  <main id="content">
+
+    {% include 'partials/phase_banner_beta.html' %}
+
+    <div class="grid-row">
+      <div class="column-two-thirds">
+      {% include 'partials/validation_partial.html' %}
+        <h1 class="heading-large">Check your answers</h1>
+
+        {# Display a list of links for each modified field. If any fields have been modified. #}
+        <div class="panel panel-border-wide" {% if edited_fields is not defined or not edited_fields %} style="display: none;" {% endif %}>
+          <p>You have made the following changes, which have been highlighted in the table below:</p>
+
+          <ul>
+            {% for field in edited_fields %}
+              <li><a id="{{ field }}_edited_field_link" href="#{{ field }}_row">{{ map[field].value }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <form action="{{ url_for('add_lon.post_review') }}" method="post">
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+          <table>
+
+            <tbody>
+
+            {% import 'partials/review_macro.html' as review_table %}
+
+            {{ review_table.add_read_only_row('Category', 'charge_type', 'Light Obstruction Notice') }}
+            {{ review_table.add_read_only_row('Law', 'statutory_provision', add_lon_charge_state.format_field_for_display('statutory_provision')) }}
+            {{ review_table.add_read_only_row('Legal document', 'instrument', add_lon_charge_state.format_field_for_display('instrument')) }}
+            {{ review_table.add_editable_row('Applicant name', 'applicant_name', 'add_lon.get_applicant_info', add_lon_charge_state.format_field_for_display('applicant_name')) }}
+            {{ review_table.add_editable_multi_row('Applicant address', 'applicant_address', 'add_lon.get_applicant_info', add_lon_charge_state.format_address_for_display('applicant_address')) }}
+            {% if add_lon_charge_state['charge_address'] %}
+              {{ review_table.add_editable_multi_row('Location (dominant building)', 'charge_address', 'add_lon.get_dominant_building_info', add_lon_charge_state.format_charge_address_for_display('charge_address')) }}
+            {% else %}
+              {{ review_table.add_editable_row('Location (dominant building)', 'charge_geographic_description', 'add_lon.get_dominant_building_info', add_lon_charge_state.format_field_for_display('charge_geographic_description')) }}
+            {% endif %}
+            {{ review_table.add_map_row('Extent (dominant building)', 'geometry', 'add_lon.get_dominant_building_extent') }}
+            {{ review_table.add_editable_row('Interest in land', 'servient_land_interest_description', 'add_lon.get_land_interest', add_lon_charge_state.format_field_for_display('servient_land_interest_description')) }}
+            {{ review_table.add_editable_row('Document: Form A and colour plan', 'form_a_file', 'add_lon.get_upload_lon_documents', filenames['form_a']) }}
+
+            {% if filenames['temporary_lon_cert'] %}
+              {{ review_table.add_editable_row('Document: Temporary certificate', 'temporary_lon_file', 'add_lon.get_upload_lon_documents', filenames['temporary_lon_cert']) }}
+              {{ review_table.add_editable_row('Temporary certificate date', 'tribunal_temporary_certificate_date', 'add_lon.get_upload_lon_documents', add_lon_charge_state.format_date_for_display('tribunal_temporary_certificate_date')) }}
+              {{ review_table.add_editable_row('Temporary certificate expiry date', 'tribunal_temporary_certificate_expiry_date', 'add_lon.get_upload_lon_documents', add_lon_charge_state.format_date_for_display('tribunal_temporary_certificate_expiry_date')) }}
+            {% endif %}
+
+            {% if filenames['definitive_lon_cert'] %}
+              {{ review_table.add_editable_row('Document: Definitive certificate', 'definitive_lon_file', 'add_lon.get_upload_lon_documents', filenames['definitive_lon_cert']) }}
+              {{ review_table.add_editable_row('Definitive certificate date', 'tribunal_definitive_certificate_date', 'add_lon.get_upload_lon_documents', add_lon_charge_state.format_date_for_display('tribunal_definitive_certificate_date')) }}
+            {% endif %}
+
+            {{ review_table.add_editable_row('Height of servient land development', 'servient_height', 'add_lon.get_servient_structure_height', add_lon_charge_state.format_height_pos_for_display('height')) }}
+            {{ review_table.add_editable_row('Covers all or part of extent', 'servient_position', 'add_lon.get_servient_structure_position', add_lon_charge_state.format_height_pos_for_display('position')) }}
+            </tbody>
+
+          </table>
+
+          <h2 class="heading-medium">Now add your local land charge</h2>
+
+          <p>By adding this charge, you are confirming that this information is correct.</p>
+
+          <p><input id="submit" type="submit" value="Add charge" class="button"></p>
+
+          <p>or <a href="{{ url_for('home.get') }}">cancel and return to main menu</a></p>
+        </form>
+
+      </div>
+    </div>
+
+  </main>
+
+  {# JavaScript to display the extent. #}
+  <input type="hidden" name="charge_extent" id="charge_extent" value="{{ geometry }}">
+{% endblock %}
+
+{% block scripts %}
+    {% include 'partials/map_scripts.html' %}
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_layer_styles.js') }}"></script>
+    <script src="{{ url_for('map.static', filename='js/map_helpers.js') }}"></script>
+    <script src="{{ url_for('view_land_charge.static', filename='js/view_charge.js') }}"></script>
+{% endblock %}

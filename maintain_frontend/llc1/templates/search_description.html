@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% block title %}Is there a single address for your search area?{% endblock %}
+
+{% block body %}
+
+  <main id="content">
+      {% include 'partials/phase_banner_beta.html' %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {% include 'partials/ko_validation_partial.html' %}
+
+        <h1 class="heading-large">Is there a single address for your search area?</h1>
+
+        <form action="{{ submit_url }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+
+            <fieldset>
+                <legend class="visually-hidden">Is there a single address for your search area?</legend>
+                <div id="address-from-group" class="form-group {% if validation_errors and validation_errors['address-from-group'] %} form-group-error {% endif %}">
+                    <div class="multiple-choice" data-target="address-finder">
+                        <input id="address-yes" name="has-address" type="radio" value="ProvideAddress" aria-controls="address-finder"
+                               {% if has_address and has_address=='ProvideAddress' %}checked='checked'{% endif %}>
+                        <label id="yes-label" class="block-label selection-button-radio" for="address-yes">Yes</label>
+                    </div>
+
+                    <div id="address-finder" class="panel panel-border-narrow js-hidden" aria-hidden="true">
+                        <input id="selected-address" type="hidden" name="selected-address" data-bind="value: ko.toJSON(selectedAddress)">
+                        {% include 'partials/address_finder_partial.html' %}
+                    </div>
+
+                    <div class="multiple-choice" data-target="no-single-address">
+                        <input id="address-no" name="has-address" type="radio" value="No" aria-controls="no-single-address"
+                               {% if has_address and has_address=='No' %}checked='checked'{% endif %}>
+                        <label id="no-label" class="block-label selection-button-radio" for="address-no">No</label>
+                    </div>
+
+                    <div id="no-single-address" class="panel panel-border-narrow js-hidden {% if validation_errors and validation_errors['charge-geographic-description'] %} form-group-error {% endif %}" aria-hidden="true">
+                        <div class="form-group">
+                            <h2 class="heading-small">Describe the area you have searched</h2>
+                            <span class="form-hint">For example, 'flats 1-5 Church Lane' or 'land to the north of the bypass'.</span>
+                            {% if validation_errors and validation_errors['charge-geographic-description'] %}
+                                <span class="error-message">{{ validation_errors['charge-geographic-description'].inline_message }}</span>
+                            {% endif %}
+                            <label class="visually-hidden" for="charge-geographic-description">Describe the location of this charge</label>
+                            <textarea class="form-control form-control-3-4" name="charge-geographic-description" id="charge-geographic-description" rows="5">{% if charge_geographic_description %}{{charge_geographic_description}}{% endif %}</textarea>
+                            <p><span class="form-hint">Answer must be shorter than 1000 characters (about 160 words)</span></p>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+          <input id="continue"
+                 type="submit"
+                 value="Continue"
+                 class="button">
+        </form>
+
+      </div>
+    </div>
+  </main>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ config.STATIC_CONTENT_URL }}/js/knockout-3.4.2.js"></script>
+
+    <script src="{{ url_for('add_land_charge.static', filename='js/postcode_search.js') }}"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            postcodeSearch.init();
+        });
+    </script>
+{% endblock %}
